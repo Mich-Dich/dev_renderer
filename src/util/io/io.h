@@ -1,7 +1,7 @@
 #pragma once
 
 
-namespace io {
+namespace GLT::io {
 
 	// Reads the content of a file into a vector of characters.
 	std::string read_file(const std::filesystem::path& filepath);

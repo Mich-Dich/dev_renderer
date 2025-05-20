@@ -4,7 +4,7 @@
 #include "util.h"
 #include "system.h"
 
-namespace util {
+namespace GLT::util {
     
     // void init() {
 

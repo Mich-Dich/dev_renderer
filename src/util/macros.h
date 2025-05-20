@@ -4,10 +4,6 @@
 
 #include "core_config.h"
 
-#ifdef RENDER_API_VULKAN
-	#define RENDERER											render::vulkan::vk_renderer
-	#define GET_RENDERER										render::vulkan::vk_renderer::get()
-#endif
 
 // ---------------------------------------------------------------------------------------------------------------------------------------
 // implisite casting

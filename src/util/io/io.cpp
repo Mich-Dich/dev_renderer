@@ -20,7 +20,7 @@
 
 #include "io.h"
 
-namespace io {
+namespace GLT::io {
 
 	//
 	std::string read_file(const std::filesystem::path& filepath) {
@@ -67,8 +67,10 @@ namespace io {
 
 			std::filesystem::path target_file_path = target_directory / full_path_to_file.filename();
 			try {
-				const bool result = std::filesystem::copy_file(full_path_to_file, target_file_path, std::filesystem::copy_options::overwrite_existing);
+				return std::filesystem::copy_file(full_path_to_file, target_file_path, std::filesystem::copy_options::overwrite_existing);
+
 			} catch (const std::filesystem::filesystem_error& e) {
+				
 				LOG(Error, "Filesystem error: [" << e.what() << "] Error code: [" << e.code() << "] Source path: [" << e.path1() << "] Target path: [" << e.path2() << "]")
 				return false;
 			}

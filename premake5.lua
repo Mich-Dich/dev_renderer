@@ -1,5 +1,5 @@
 
-------------------
+------------ path ------------
 vendor_path = {}
 vendor_path["glew"]				= "vendor/glew"
 vendor_path["glfw"]          	= "vendor/glfw"
@@ -7,6 +7,7 @@ vendor_path["glm"]           	= "vendor/glm"
 vendor_path["ImGui"]         	= "vendor/imgui"
 vendor_path["tinyobjloader"] 	= "vendor/tinyobjloader"
 vendor_path["stb_image"]     	= "vendor/stb_image"
+vendor_path["ImGuizmo"]         = "vendor/ImGuizmo"
 
 ------------ include ------------ 
 IncludeDir = {}
@@ -16,13 +17,14 @@ IncludeDir["glm"]               = "%{wks.location}/%{vendor_path.glm}"
 IncludeDir["ImGui"]             = "%{wks.location}/%{vendor_path.ImGui}"
 IncludeDir["tinyobjloader"]     = "%{wks.location}/%{vendor_path.tinyobjloader}"
 IncludeDir["stb_image"]         = "%{wks.location}/%{vendor_path.stb_image}"
+IncludeDir["ImGuizmo"]          = "%{wks.location}/%{vendor_path.ImGuizmo}"
 
 
 
 
-workspace "small_renderer"
+workspace "gluttony"
 	platforms "x64"
-	startproject "renderer"
+	startproject "gluttony"
 
 	configurations
 	{
@@ -61,7 +63,7 @@ group ""
 
 
 
-project "renderer"
+project "gluttony"
 	location "%{wks.location}"
 	kind "WindowedApp"
 	language "C++"
@@ -85,6 +87,9 @@ project "renderer"
 		"src/**.h",
 		"src/**.cpp",
 		"src/**.embed",
+
+		"vendor/ImGuizmo/ImGuizmo.h",
+		"vendor/ImGuizmo/ImGuizmo.cpp",
 	}
 
 	includedirs
@@ -151,6 +156,10 @@ project "renderer"
 		{
 			"-msse4.1",										  	-- include the SSE4.1 flag for Linux builds
 			"-fPIC",
+
+			-- compiler options
+			"-Wall",
+        	"-Wno-dangling-else",
 		}
 
 		postbuildcommands

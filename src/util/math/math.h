@@ -3,7 +3,7 @@
 #include <glm/glm.hpp>
 #include <concepts>
 
-namespace math {
+namespace GLT::math {
 
     bool is_valid_vec3(const glm::vec3& vec);
 

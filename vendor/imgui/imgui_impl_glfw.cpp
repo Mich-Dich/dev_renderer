@@ -1181,7 +1181,7 @@ static void ImGui_ImplGlfw_SetWindowSize(ImGuiViewport* viewport, ImVec2 size)
 static void ImGui_ImplGlfw_SetWindowTitle(ImGuiViewport* viewport, const char* title)
 {
     ImGui_ImplGlfw_ViewportData* vd = (ImGui_ImplGlfw_ViewportData*)viewport->PlatformUserData;
-    std::string newTitle = "PFF - ";                                                                    // Prepend "PFF - " to the title
+    std::string newTitle = "GLT - ";                                                                    // Prepend "GLT - " to the title
     newTitle += title;
     glfwSetWindowTitle(vd->Window, newTitle.c_str());
 }

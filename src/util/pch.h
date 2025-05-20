@@ -1,6 +1,5 @@
 #pragma once
 
-
 #ifndef NOMINMAX
 	#define NOMINMAX				// See github.com/skypjack/entt/wiki/Frequently-Asked-Questions#warning-c4003-the-min-the-max-and-the-macro
 #endif
@@ -68,6 +67,8 @@
 #include <cassert>
 #include <cstdlib>
 
+#include <regex>
+
 // glm math
 #define GLM_ENABLE_EXPERIMENTAL
 
@@ -96,7 +97,7 @@
 #include "util/data_structures/data_types.h"
 #include "util/macros.h"
 #include "util/math/math.h"
-// #include "util/timing/instrumentor.h"
+#include "util/timing/instrumentor.h"
 #include "util/io/logger.h"
 
 // #include "util/data_structures/path_manipulation.h"

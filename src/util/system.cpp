@@ -23,7 +23,7 @@
 #include "system.h"
 
 
-namespace util {
+namespace GLT::util {
 
     void open_console(const char* title, const bool enable_anci_codes) {
     

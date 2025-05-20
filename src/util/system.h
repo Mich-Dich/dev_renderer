@@ -1,7 +1,7 @@
 #pragma once
 
 
-namespace util {
+namespace GLT::util {
 
     void open_console(const char* title, const bool enable_anci_codes = false);
 
@@ -50,7 +50,7 @@ namespace util {
 #if defined(PLATFORM_LINUX)
     
     // @brief Initializes the Qt application framework.
-    //          This function is automaticly called by the PFF::aplication on startup
+    //          This function is automaticly called by the GLT::aplication on startup
     //          It sets up the Qt message handler to route Qt log messages through the custom logging system.
     void init_qt();
 

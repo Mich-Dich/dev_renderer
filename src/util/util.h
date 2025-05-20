@@ -20,8 +20,8 @@
 // 
 // #include "util/data_structures/path_manipulation.h"
 // #include "util/data_structures/simple_deletion_queue.h"
-// #include "util/data_structures/string_manipulation.h"
-// #include "util/UUID.h"
+#include "util/data_structures/string_manipulation.h"
+#include "util/data_structures/UUID.h"
 
 // #include "util/io/config.h"
 #include "util/io/io.h"
@@ -31,7 +31,7 @@
 // #include "util/io/serializer_yaml.h"
 
 #include "util/math/math.h"
-// #include "util/math/constance.h"
+#include "util/math/constance.h"
 // #include "util/math/noise.h"
 // #include "util/math/random.h"
 
@@ -42,7 +42,7 @@
 // #include "util/ui/imgui_markdown.h"
 // #include "util/ui/pannel_collection.h"
 
-namespace util {
+namespace GLT::util {
 
     // TODO: should auto-call
     // void init();

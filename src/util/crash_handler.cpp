@@ -32,6 +32,9 @@
 	 * SOFTWARE.
 	 */
 
+	 
+namespace GLT {
+
 #if defined(PLATFORM_LINUX)
 
 	const std::initializer_list<int> signals = {
@@ -148,3 +151,4 @@
 
 #endif
 
+}

@@ -1,5 +1,4 @@
 #pragma once
-#pragma warning(disable: 4251)
 
 #include "util/core_config.h"
 
@@ -9,7 +8,7 @@
 //	#define DEBUG_BREAK() __debugbreak()
 //#endif // !DEBUG_BREAK
 
-namespace logger {
+namespace GLT::logger {
 
     // Define the severity levels for logging
     // @note severity Enum representing the levels of logging severity
@@ -215,9 +214,9 @@ namespace logger {
 
 #if ENABLE_LOGGING_FOR_VALIDATION
     #define VALIDATE(expr, command, message_success, message_failure)                   \
-        if (expr)                                                                       \
+        if (expr) {                                                                     \
             LOG(Trace, message_success)                                                 \
-        else {                                                                          \
+        } else {                                                                        \
             LOG(Error, message_failure)                                                 \
             command;                                                                    \
         }

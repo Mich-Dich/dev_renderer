@@ -8,7 +8,7 @@
 
 #include "math.h"
 
-namespace math {
+namespace GLT::math {
 	
 	bool is_valid_vec3(const glm::vec3& vec) { return !std::isnan(vec.x) && !std::isnan(vec.y) && !std::isnan(vec.z); }
 

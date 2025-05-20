@@ -5,7 +5,7 @@
 
 
 
-namespace logger {
+namespace GLT::logger {
 
 #if 1       // multithreaded version
 
