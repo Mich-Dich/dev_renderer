@@ -10,16 +10,16 @@
 
 namespace GLT {
 	
-	// world_layer::world_layer() { 
+	world_layer::world_layer() { 
 
-	// 	LOG_INIT();
-	// }
+		LOG_INIT();
+	}
 
-	// world_layer::~world_layer() { 
+	world_layer::~world_layer() { 
 		
-	// 	LOG_SHUTDOWN();
-	// 	m_map.reset();
-	// }
+		LOG_SHUTDOWN();
+		// m_map.reset();
+	}
 
 
 	// void world_layer::register_player_controller(ref<player_controller> player_controller) {
@@ -35,49 +35,45 @@ namespace GLT {
 	// 	map->create();							// create the entities
 	// }
 
-	// void world_layer::on_attach() {
+	void world_layer::on_attach() {
 	
-	// 	m_editor_camera = std::make_shared<camera>();
-	// 	m_editor_camera->set_view_direction(glm::vec3{ 0.0f }, glm::vec3{ 0.5f, 0.0f, 1.0f });
-	// 	//m_editor_camera.set_orthographic_projection(-aspect, aspect, -1, 1, 0, 10);
-	// 	//m_editor_camera->set_perspective_projection(glm::radians(50.f), application::get().application::get().get_renderer()()->get_aspect_ratio(), 0.1f, 350.0f);
+		// m_editor_camera = std::make_shared<camera>();
+		// m_editor_camera->set_view_direction(glm::vec3{ 0.0f }, glm::vec3{ 0.5f, 0.0f, 1.0f });
+		//m_editor_camera.set_orthographic_projection(-aspect, aspect, -1, 1, 0, 10);
+		//m_editor_camera->set_perspective_projection(glm::radians(50.f), application::get().application::get().get_renderer()()->get_aspect_ratio(), 0.1f, 350.0f);
 
-	// 	//float aspect = m_swapchain->get_extentAspectRatio();
-	// 	//m_editor_camera.set_view_target(glm::vec3(-1.0f, -2.0f, -3.0f), glm::vec3(0.0f));
+		//float aspect = m_swapchain->get_extentAspectRatio();
+		//m_editor_camera.set_view_target(glm::vec3(-1.0f, -2.0f, -3.0f), glm::vec3(0.0f));
 		
-	// 	LOG(Trace, "attaching world_layer");
-	// }
+		LOG(Trace, "attaching world_layer");
+	}
 
-	// void world_layer::on_detach() { 
+	void world_layer::on_detach() { 
 
-	// 	m_player_controller.reset();
-	// 	m_editor_camera.reset();
+		// m_player_controller.reset();
+		// m_editor_camera.reset();
 		
-	// 	LOG(Trace, "detaching world_layer");
-	// }
+		LOG(Trace, "detaching world_layer");
+	}
 
-	// void world_layer::on_update(const f32 delta_time) {
+	void world_layer::on_update(const f32 delta_time) {
 
-	// 	PROFILE_FUNCTION();
+		PROFILE_FUNCTION();
 
-	// 	m_player_controller->update_internal(delta_time);
+		// m_player_controller->update_internal(delta_time);
 	
-	// 	m_map->on_update(delta_time);
+		// m_map->on_update(delta_time);
 		
-	// }
+	}
 
-	// void world_layer::on_event(event& event) {
+	void world_layer::on_event(event& event) {
 
-	// 	PROFILE_FUNCTION();
+		PROFILE_FUNCTION();
 
-	// 	if (m_player_controller)
-	// 		m_player_controller->handle_event(event);
-	// }
+		// if (m_player_controller)
+		// 	m_player_controller->handle_event(event);
+	}
 
-	// void world_layer::on_imgui_render() {
-	
-
-	// }
-
+	void world_layer::on_imgui_render() { }
 
 }

@@ -1,8 +1,11 @@
 #pragma once
 
+#include "layer/layer.h"
+
+
 namespace GLT {
 	
-	class layer;
+	// class layer;
 
 	class layer_stack {	
 	public:

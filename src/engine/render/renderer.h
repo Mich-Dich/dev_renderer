@@ -3,6 +3,8 @@
 
 #include "engine/platform/window.h"
 
+namespace GLT { class layer_stack; }
+
 namespace GLT::render {
 
     struct general_performance_metrik {
@@ -30,13 +32,16 @@ namespace GLT::render {
     class renderer {
     public:
 
-        renderer(ref<window> window) : m_window(window) {}
+        renderer(ref<window> window, ref<layer_stack> layer_stack)
+            : m_window(window), m_layer_stack(layer_stack) {}
         virtual ~renderer() = default;
     
 		DEFAULT_GETTERS(general_performance_metrik,	        general_performance_metrik)
 
         virtual void draw_frame(float delta_time) = 0;
         virtual void set_size(const u32 width, const u32 height) = 0;
+
+        virtual void reload_fragment_shader(const std::filesystem::path& frag_file) = 0;
 
         // -------- ImGui --------
         virtual void imgui_init() = 0;
@@ -48,7 +53,8 @@ namespace GLT::render {
 
     protected:
 
-        ref<window>             m_window;
+        ref<GLT::window>        m_window;
+        ref<GLT::layer_stack>   m_layer_stack;
         system_state            m_system_state = system_state::inactive;
         
     private:

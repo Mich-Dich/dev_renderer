@@ -11,6 +11,7 @@ namespace GLT {
     class map;
     class camera;
     class layer_stack;
+    class world_layer;
     namespace render    { class renderer; }
     namespace UI        { class imgui_layer; }
 
@@ -74,7 +75,7 @@ namespace GLT {
 
         ref<layer_stack>			        m_layerstack{};
 		UI::imgui_layer*			        m_imgui_layer;
-		// world_layer*				        m_world_layer;
+		world_layer*				        m_world_layer;
 
         std::vector<event>			        m_event_queue;		// TODO: change to queue
         // ref<map>					        m_current_map = nullptr;

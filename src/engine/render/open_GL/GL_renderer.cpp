@@ -7,14 +7,18 @@
 #include <imgui_impl_opengl3.h>
 
 #include "util/util.h"
+#include "layer/layer.h"
+#include "layer/layer_stack.h"
+#include "layer/imgui_layer.h"
+#include "layer/world_layer.h"
 
 #include "GL_renderer.h"
 
 
 namespace GLT::render::open_GL {
 
-    GL_renderer::GL_renderer(ref<window> window) 
-        : renderer(window) {
+    GL_renderer::GL_renderer(ref<window> window, ref<layer_stack> layer_stack)
+        : renderer(window, layer_stack) {
         
         GLFWwindow* glfwWindow = m_window->get_window();
         glfwMakeContextCurrent(glfwWindow);
@@ -45,6 +49,24 @@ namespace GLT::render::open_GL {
     }
     
 
+
+
+    GLuint GL_renderer::compile_shader(GLenum type, const char* source) {
+
+        GLuint shader = glCreateShader(type);
+        glShaderSource(shader, 1, &source, nullptr);
+        glCompileShader(shader);
+        
+        GLint success;
+        glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
+        if(!success) {
+            char infoLog[512];
+            glGetShaderInfoLog(shader, 512, nullptr, infoLog);
+            LOG(Error, "Shader compilation failed: " << infoLog);
+        }
+        return shader;
+    }
+    
     
     void GL_renderer::draw_frame(float delta_time) {
     
@@ -74,13 +96,76 @@ namespace GLT::render::open_GL {
         glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
         glBindVertexArray(0);
     
+        // start new ImGui frame
+        ImGui_ImplOpenGL3_NewFrame();
+        ImGui_ImplGlfw_NewFrame();
+        ImGui::NewFrame();
+
+        for (layer* layer : *renderer::m_layer_stack) 
+            layer->on_imgui_render();
+
+        ImGui::Render();
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
         // Swap buffers
         glfwSwapBuffers(m_window->get_window());
     }
     
+
     void GL_renderer::set_size(const u32 width, const u32 height) { glViewport(0, 0, width, height); }
     
-    
+
+    void GL_renderer::reload_fragment_shader(const std::filesystem::path& frag_file)
+    {
+        // Read new fragment shader source
+        std::string frag_src = io::read_file(frag_file.string());
+        if (frag_src.empty()) {
+            LOG(Error, "Failed to read frag shader: " << frag_file);
+            return;
+        }
+
+        // --- Recreate shader program from scratch to avoid duplicate definitions ---
+        // Read vertex shader again (to use same entry point)
+        std::string vert_src = io::read_file("shaders/fullscreen_quad.vert");
+        if (vert_src.empty()) {
+            LOG(Error, "Failed to re-read vert shader");
+            return;
+        }
+
+        GLuint vertShader = compile_shader(GL_VERTEX_SHADER, vert_src.c_str());
+        GLuint fragShader = compile_shader(GL_FRAGMENT_SHADER, frag_src.c_str());
+
+        GLuint newProgram = glCreateProgram();
+        glAttachShader(newProgram, vertShader);
+        glAttachShader(newProgram, fragShader);
+        glLinkProgram(newProgram);
+
+        // Check link status
+        GLint success;
+        glGetProgramiv(newProgram, GL_LINK_STATUS, &success);
+        if (!success) {
+            char infoLog[512];
+            glGetProgramInfoLog(newProgram, 512, nullptr, infoLog);
+            LOG(Error, "Shader relink failed: " << infoLog);
+            // Cleanup
+            glDeleteShader(vertShader);
+            glDeleteShader(fragShader);
+            glDeleteProgram(newProgram);
+            return;
+        }
+
+        // If successful, swap programs
+        glDeleteProgram(m_shader_program);
+        m_shader_program = newProgram;
+
+        // Cleanup shaders (they can be deleted after linking)
+        glDeleteShader(vertShader);
+        glDeleteShader(fragShader);
+
+        LOG(Info, "Shader program reloaded from " << frag_file);
+    }
+
+
     void GL_renderer::imgui_init() {
 
         IMGUI_CHECKVERSION();
@@ -90,6 +175,7 @@ namespace GLT::render::open_GL {
         ImGui::StyleColorsDark();
     }
 
+
     void GL_renderer::imgui_shutdown() {
 
         ImGui_ImplOpenGL3_Shutdown();
@@ -97,29 +183,13 @@ namespace GLT::render::open_GL {
         // ImGui::DestroyContext();
     }
 
+
     void GL_renderer::imgui_create_fonts() {
         
         ImGui_ImplOpenGL3_CreateFontsTexture();
     }
 
 
-
-    
-    GLuint compile_shader(GLenum type, const char* source) {
-        GLuint shader = glCreateShader(type);
-        glShaderSource(shader, 1, &source, nullptr);
-        glCompileShader(shader);
-        
-        GLint success;
-        glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
-        if(!success) {
-            char infoLog[512];
-            glGetShaderInfoLog(shader, 512, nullptr, infoLog);
-            LOG(Error, "Shader compilation failed: " << infoLog);
-        }
-        return shader;
-    }
-    
     void GL_renderer::create_shader_program() {
     
         std::string vert_content = io::read_file("shaders/fullscreen_quad.vert");
@@ -148,6 +218,7 @@ namespace GLT::render::open_GL {
         glDeleteShader(fragmentShader);
     }
     
+
     void GL_renderer::create_fullscreen_quad() {
         
         float vertices[] = {

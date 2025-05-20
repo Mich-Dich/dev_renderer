@@ -63,6 +63,7 @@ namespace GLT::UI {
 	//	update_UI_theme();
 	//}
 
+
 	imgui_layer::imgui_layer() : layer("imgui_layer") { 
 		
 		LOG_INIT(); 
@@ -87,6 +88,7 @@ namespace GLT::UI {
 		//	//test_image.reset();
 		//}
 	}
+
 
 	imgui_layer::~imgui_layer() { 
 
@@ -161,10 +163,56 @@ namespace GLT::UI {
 	void imgui_layer::on_event(event& event) { }
 
 
+
+	void show_directory_tree(const std::filesystem::path& dir_path, const std::function<void(const std::filesystem::path&)>& on_shader_select) {
+		
+		if (!std::filesystem::is_directory(dir_path)) {
+			if (dir_path.extension() == ".frag") {
+				std::string filename = dir_path.filename().string();
+				ImGui::PushID(filename.c_str());
+				if (ImGui::Button(filename.c_str()))
+					on_shader_select(dir_path);
+				ImGui::PopID();
+			}
+			return;
+		}
+
+		// Sort sub-entries alphabetically
+		std::vector<std::filesystem::directory_entry> entries;
+		for (auto const& e : std::filesystem::directory_iterator(dir_path))
+			entries.push_back(e);
+
+		std::sort(entries.begin(), entries.end(),
+			[](auto const& a, auto const& b) {
+				return a.path().filename().string() < b.path().filename().string();
+			});
+
+		// Render directory node
+		std::string label = dir_path.has_filename()
+			? dir_path.filename().string()
+			: dir_path.string();
+
+		if (ImGui::TreeNode(label.c_str())) {
+			for (auto const& entry : entries)
+				show_directory_tree(entry.path(), on_shader_select);
+			ImGui::TreePop();
+		}
+	}
+
+
 	void imgui_layer::on_imgui_render() {
 
 		PROFILE_FUNCTION();
 		ImGui::SetCurrentContext(m_context);
+
+		UI::set_next_window_pos(window_pos::top_left, 4.f);
+		ImGui::Begin("Test", nullptr, ImGuiWindowFlags_AlwaysAutoResize); {
+
+			std::filesystem::path base_path = GLT::util::get_executable_path() / std::filesystem::path("..") / "shaders";
+
+			show_directory_tree(base_path, [this](const std::filesystem::path& shader_path) { application::get().get_renderer()->reload_fragment_shader(shader_path); });
+
+		} ImGui::End();
 	}
 
 
@@ -490,6 +538,7 @@ namespace GLT::UI {
 		// update_UI_theme();
 	}
 
+
 	void enable_window_border(bool enable) {
 
 		window_border = enable;
@@ -499,6 +548,7 @@ namespace GLT::UI {
 		style->WindowBorderSize = enable ? 1.f : 0.f;
 	}
 	
+
 	void update_UI_theme() {
 		
 		//LOG(Debug, "updating UI theme");

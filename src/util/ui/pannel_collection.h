@@ -95,12 +95,12 @@ namespace GLT::UI {
 	// @brief Sets the position of the next ImGui window based on a predefined location.
 	// @param [location] The desired position of the window (e.g., center, top-left).
 	// @param [padding] The padding to apply around the window.
-	void set_next_window_pos(window_pos location, f32 padding = 10.f);
+	void set_next_window_pos(const window_pos location, const f32 padding = 10.f);
 
 	// @brief Sets the position of the next ImGui window relative to the current window.
 	// @param [location] The desired position of the window (e.g., center, top-left).
 	// @param [padding] The padding to apply around the window.
-	void set_next_window_pos_in_window(window_pos location, f32 padding = 10.f);
+	void set_next_window_pos_in_window(const window_pos location, const f32 padding = 10.f);
 
 	// @brief Displays a menu to select the position of the next ImGui window.
 	// @param [position] The current position of the window, which can be modified.

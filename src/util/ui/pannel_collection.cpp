@@ -234,7 +234,7 @@ namespace GLT::UI {
 	}
 
 
-	void set_next_window_pos(window_pos location, f32 padding) {
+	void set_next_window_pos(const window_pos location, const f32 padding) {
 
 		if (location == window_pos::center)
 			ImGui::SetNextWindowPos(ImGui::GetMainViewport()->GetCenter(), ImGuiCond_Always, ImVec2(0.5f, 0.5f));
@@ -257,7 +257,7 @@ namespace GLT::UI {
 	}
 
 
-	void set_next_window_pos_in_window(window_pos location, f32 padding) {
+	void set_next_window_pos_in_window(const window_pos location, const f32 padding) {
 
 		ImVec2 pos = ImGui::GetWindowPos();
 		ImVec2 size = ImGui::GetWindowSize();

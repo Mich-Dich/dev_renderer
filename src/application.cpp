@@ -16,6 +16,7 @@
 #include "layer/layer.h"
 #include "layer/layer_stack.h"
 #include "layer/imgui_layer.h"
+#include "layer/world_layer.h"
 
 #include "application.h"
 
@@ -46,21 +47,16 @@ namespace GLT {
     
         m_window = std::make_shared<window>();
         m_window->set_event_callback(BIND_FUNKTION(application::on_event));
-    
-        // ---------------------------------------- renderer ----------------------------------------
-    
-        m_renderer = create_ref<GLT::render::open_GL::GL_renderer>(m_window);
-    
-        // ---------------------------------------- layers ----------------------------------------
         m_layerstack = create_ref<layer_stack>();
-        
-        // m_world_layer = new world_layer();
-		// m_layerstack->push_layer(m_world_layer);
+        m_renderer = create_ref<GLT::render::open_GL::GL_renderer>(m_window, m_layerstack);
+
+        // ---------------------------------------- layers ----------------------------------------
+        m_world_layer = new world_layer();
+		m_layerstack->push_layer(m_world_layer);
 		// m_renderer->set_active_camera(m_world_layer->get_editor_camera());
 
         m_imgui_layer = new UI::imgui_layer();
         m_layerstack->push_overlay(m_imgui_layer);
-
     }
     
     application::~application() {
@@ -69,9 +65,9 @@ namespace GLT {
 		delete m_imgui_layer;
 		m_imgui_layer = nullptr;
 
-		// m_layerstack->pop_overlay(m_world_layer);
-		// delete m_world_layer;
-		// m_world_layer = nullptr;
+		m_layerstack->pop_layer(m_world_layer);
+		delete m_world_layer;
+		m_world_layer = nullptr;
 
 		m_renderer.reset();
 		m_layerstack.reset();
