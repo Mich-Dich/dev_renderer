@@ -33,6 +33,7 @@ namespace GLT {
         DEFAULT_GETTER(ref<GLT::render::renderer>,					        renderer)
         DEFAULT_GETTER(static ref<window>,							        window);
         DEFAULT_GETTER(UI::imgui_layer*,								    imgui_layer);
+        DEFAULT_GETTER(world_layer*,								        world_layer);
 
         FORCEINLINE static application& get()								{ return *s_instance; }
         FORCEINLINE static void close_application()							{ m_running = false; }

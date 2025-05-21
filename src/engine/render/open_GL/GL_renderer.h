@@ -17,22 +17,37 @@ namespace GLT::render::open_GL {
         void draw_frame(float delta_time);
         void set_size(const u32 width, const u32 height);
 
-        void reload_fragment_shader(const std::filesystem::path& frag_file);
+        void upload_mesh(ref<GLT::mesh::static_mesh> mesh);
+        void create_geometry_shader();
 
         // -------- ImGui --------
         void imgui_init();
         void imgui_shutdown();
         void imgui_create_fonts();
 
+        void reload_fragment_shader(const std::filesystem::path& frag_file);
+
     private:
-        GLuint          m_shader_program;
-        GLuint          m_vao;
-        GLuint          m_vbo;
+        GLuint          m_vao{};
+        GLuint          m_vbo{};
         glm::vec2       mouse_pos{};
+        GLuint          m_total_render_time{};
+        f32             m_total_time = 0.f;
         
         void create_shader_program();
         void create_fullscreen_quad();
         GLuint compile_shader(GLenum type, const char* source);
+
+        // TODO: create camera struct
+        glm::mat4 m_viewMatrix;
+        glm::vec3 m_cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
+        glm::vec3 m_cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
+        glm::vec3 m_cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
+        
+        // Uniform locations
+        GLuint m_geometry_shader_model_loc;
+        GLuint m_geometry_shader_view_loc;
+        GLuint m_geometry_shader_proj_loc;
     };
 
 }

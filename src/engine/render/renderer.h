@@ -1,9 +1,15 @@
 
 #pragma once
 
-#include "engine/platform/window.h"
+#include "engine/render/buffer.h"
+#include "engine/render/g_buffer.h"
 
-namespace GLT { class layer_stack; }
+
+namespace GLT {
+    class layer_stack;
+    class window;
+}
+namespace GLT::mesh { class static_mesh; }
 
 namespace GLT::render {
 
@@ -19,7 +25,7 @@ namespace GLT::render {
         f32 waiting_idle_time[200] = {};
         u16 current_index = 0;
 
-        void reset() {
+        void next_iteration() {
 
             current_index = (current_index + 1) % 200;
 
@@ -41,25 +47,27 @@ namespace GLT::render {
         virtual void draw_frame(float delta_time) = 0;
         virtual void set_size(const u32 width, const u32 height) = 0;
 
-        virtual void reload_fragment_shader(const std::filesystem::path& frag_file) = 0;
-
         // -------- ImGui --------
         virtual void imgui_init() = 0;
         virtual void imgui_shutdown() = 0;
         virtual void imgui_create_fonts() = 0;
+
+        virtual void reload_fragment_shader(const std::filesystem::path& frag_file) = 0;
+        virtual void upload_mesh(ref<GLT::mesh::static_mesh> mesh) = 0;
 
         // -------- fixed for all sub-classes --------
         void set_state(system_state new_state) { m_system_state = new_state;}
 
     protected:
 
-        ref<GLT::window>        m_window;
-        ref<GLT::layer_stack>   m_layer_stack;
-        system_state            m_system_state = system_state::inactive;
-        
-    private:
+        ref<GLT::window>                m_window;
+        ref<GLT::layer_stack>           m_layer_stack;
+        system_state                    m_system_state = system_state::inactive;
+        general_performance_metrik      m_general_performance_metrik{};
+        g_buffer                        m_gbuffer;
+        u32                             m_geometry_shader;
+        u32                             m_lighting_shader{};
 
-		general_performance_metrik           m_general_performance_metrik{};
 
     };
 

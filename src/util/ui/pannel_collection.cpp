@@ -241,7 +241,7 @@ namespace GLT::UI {
 
 		else if (static_cast<u32>(location) >= 2) {
 
-			const f32 title_bar_height = 60.f;
+			const f32 title_bar_height = 0.f;
 			const ImGuiViewport* viewport = ImGui::GetMainViewport();
 			ImVec2 work_pos = { viewport->WorkPos.x , viewport->WorkPos.y + title_bar_height }; // Use work area to avoid menu-bar/task-bar, if any!
 			ImVec2 work_size = viewport->WorkSize;

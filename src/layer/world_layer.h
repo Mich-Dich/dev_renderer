@@ -8,6 +8,11 @@
 
 namespace GLT {
 	
+	// ============= DEV-ONLY =============
+	namespace mesh { class static_mesh; }
+	// ============= DEV-ONLY =============
+
+
 	class world_layer : public layer {
 	public:
 
@@ -41,6 +46,11 @@ namespace GLT {
 		// @brief Pauses or unpauses the system.
 		// @param [should_pause] Whether the system should be paused.
 		void pause(bool should_pause);
+
+
+		// ============= DEV-ONLY =============
+		ref<GLT::mesh::static_mesh> GET_RENDER_MESH();
+		// ============= DEV-ONLY =============
 
 
 	private:

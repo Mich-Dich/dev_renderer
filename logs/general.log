@@ -1,46 +1,24 @@
 
 ========================================================
-Log initalized at [2025-05-20 23:32:57]
+Log initalized at [2025-05-22 01:23:41]
 ========================================================
-[[38;5;246m23:32:57:785[0m] [[38;5;246mTRACE application.cpp - application:40[0m] init
-[[38;5;246m23:32:57:786[0m] [[38;5;246mTRACE application.cpp - application:43[0m] init engine
-[[38;5;246m23:32:57:786[0m] [[38;5;246mTRACE window.cpp - window:31[0m] init
-[[38;5;246m23:32:57:811[0m] [[38;5;246mTRACE window.cpp - window:38[0m] GLFW initialized
-[[38;5;246m23:32:57:811[0m] [[38;5;246mTRACE window.cpp - window:66[0m] Monitor: 0 data: 1920 / 0 / 3440 / 1392
-[[38;5;246m23:32:57:812[0m] [[38;5;246mTRACE window.cpp - window:66[0m] Monitor: 1 data: 0 / 180 / 1920 / 1080
-[[38;5;246m23:32:58:084[0m] [[38;5;246mTRACE window.cpp - window:77[0m] Creating window [Small renderer width: 1592  height: 865]
-[[38;5;246m23:32:58:084[0m] [[38;5;246mTRACE window.cpp - window:81[0m] window pos [Small renderer X: 100  Y: 100]
-[[33m23:32:58:084[0m] [[33mWARN  window.cpp - set_vsync:220[0m] VSync functionality not supported yet
-[[38;5;246m23:32:58:084[0m] [[38;5;246mTRACE layer_stack.cpp - layer_stack:10[0m] init
-[[38;5;246m23:32:58:087[0m] [[38;5;246mTRACE GL_renderer.cpp - GL_renderer:31[0m] OpenGL Version: 4.6 (Core Profile) Mesa 24.2.8-1ubuntu1~24.04.1
-[[38;5;246m23:32:58:087[0m] [[38;5;246mTRACE GL_renderer.cpp - GL_renderer:32[0m] GLSL Version: 4.60
-[[38;5;246m23:32:58:087[0m] [[38;5;246mTRACE GL_renderer.cpp - GL_renderer:33[0m] Vendor: AMD
-[[38;5;246m23:32:58:087[0m] [[38;5;246mTRACE GL_renderer.cpp - GL_renderer:34[0m] Renderer: AMD Radeon Graphics (radeonsi, renoir, LLVM 19.1.1, DRM 3.57, 6.8.0-60-generic)
-[[38;5;246m23:32:58:093[0m] [[38;5;246mTRACE world_layer.cpp - world_layer:15[0m] init
-[[38;5;246m23:32:58:093[0m] [[38;5;246mTRACE world_layer.cpp - on_attach:48[0m] attaching world_layer
-[[38;5;246m23:32:58:093[0m] [[38;5;246mTRACE imgui_layer.cpp - imgui_layer:69[0m] init
-[[38;5;246m23:32:58:093[0m] [[38;5;246mTRACE imgui_layer.cpp - on_attach:103[0m] attach imgui layer
-[[92m23:33:01:156[0m] [[92mINFO  GL_renderer.cpp - reload_fragment_shader:165[0m] Shader program reloaded from "/home/mich/workspace/gluttony/bin/Debug-linux-x86_64/gluttony/../shaders/00_simple_pix.frag"
-[[92m23:33:01:861[0m] [[92mINFO  GL_renderer.cpp - reload_fragment_shader:165[0m] Shader program reloaded from "/home/mich/workspace/gluttony/bin/Debug-linux-x86_64/gluttony/../shaders/01_stripe.frag"
-[[92m23:33:02:590[0m] [[92mINFO  GL_renderer.cpp - reload_fragment_shader:165[0m] Shader program reloaded from "/home/mich/workspace/gluttony/bin/Debug-linux-x86_64/gluttony/../shaders/02_palette.frag"
-[[92m23:33:03:315[0m] [[92mINFO  GL_renderer.cpp - reload_fragment_shader:165[0m] Shader program reloaded from "/home/mich/workspace/gluttony/bin/Debug-linux-x86_64/gluttony/../shaders/03_square.frag"
-[[92m23:33:04:074[0m] [[92mINFO  GL_renderer.cpp - reload_fragment_shader:165[0m] Shader program reloaded from "/home/mich/workspace/gluttony/bin/Debug-linux-x86_64/gluttony/../shaders/04_better_square.frag"
-[[92m23:33:04:790[0m] [[92mINFO  GL_renderer.cpp - reload_fragment_shader:165[0m] Shader program reloaded from "/home/mich/workspace/gluttony/bin/Debug-linux-x86_64/gluttony/../shaders/05_polar_intro.frag"
-[[92m23:33:05:421[0m] [[92mINFO  GL_renderer.cpp - reload_fragment_shader:165[0m] Shader program reloaded from "/home/mich/workspace/gluttony/bin/Debug-linux-x86_64/gluttony/../shaders/06_gear.frag"
-[[92m23:33:06:185[0m] [[92mINFO  GL_renderer.cpp - reload_fragment_shader:165[0m] Shader program reloaded from "/home/mich/workspace/gluttony/bin/Debug-linux-x86_64/gluttony/../shaders/07_polygon.frag"
-[[92m23:33:11:049[0m] [[92mINFO  GL_renderer.cpp - reload_fragment_shader:165[0m] Shader program reloaded from "/home/mich/workspace/gluttony/bin/Debug-linux-x86_64/gluttony/../shaders/06_gear.frag"
-[[92m23:33:11:652[0m] [[92mINFO  GL_renderer.cpp - reload_fragment_shader:165[0m] Shader program reloaded from "/home/mich/workspace/gluttony/bin/Debug-linux-x86_64/gluttony/../shaders/07_polygon.frag"
-[[92m23:33:12:292[0m] [[92mINFO  GL_renderer.cpp - reload_fragment_shader:165[0m] Shader program reloaded from "/home/mich/workspace/gluttony/bin/Debug-linux-x86_64/gluttony/../shaders/08_transform.frag"
-[[92m23:33:12:894[0m] [[92mINFO  GL_renderer.cpp - reload_fragment_shader:165[0m] Shader program reloaded from "/home/mich/workspace/gluttony/bin/Debug-linux-x86_64/gluttony/../shaders/09_pattern.frag"
-[[92m23:33:16:050[0m] [[92mINFO  GL_renderer.cpp - reload_fragment_shader:165[0m] Shader program reloaded from "/home/mich/workspace/gluttony/bin/Debug-linux-x86_64/gluttony/../shaders/10_random_noise.frag"
-[[92m23:33:17:482[0m] [[92mINFO  GL_renderer.cpp - reload_fragment_shader:165[0m] Shader program reloaded from "/home/mich/workspace/gluttony/bin/Debug-linux-x86_64/gluttony/../shaders/11_cellular_noise.frag"
-[[92m23:33:26:754[0m] [[92mINFO  GL_renderer.cpp - reload_fragment_shader:165[0m] Shader program reloaded from "/home/mich/workspace/gluttony/bin/Debug-linux-x86_64/gluttony/../shaders/00_simple_pix.frag"
-[[92m23:33:29:864[0m] [[92mINFO  GL_renderer.cpp - reload_fragment_shader:165[0m] Shader program reloaded from "/home/mich/workspace/gluttony/bin/Debug-linux-x86_64/gluttony/../shaders/05_polar_intro.frag"
-[[38;5;246m23:33:34:743[0m] [[38;5;246mTRACE application.cpp - run:103[0m] Exiting main run loop
-[[38;5;246m23:33:34:743[0m] [[38;5;246mTRACE imgui_layer.cpp - on_detach:150[0m] detach imgui layer
-[[38;5;246m23:33:34:744[0m] [[38;5;246mTRACE imgui_layer.cpp - ~imgui_layer:97[0m] shutdown
-[[38;5;246m23:33:34:744[0m] [[38;5;246mTRACE world_layer.cpp - on_detach:56[0m] detaching world_layer
-[[38;5;246m23:33:34:744[0m] [[38;5;246mTRACE world_layer.cpp - ~world_layer:20[0m] shutdown
-[[38;5;246m23:33:34:744[0m] [[38;5;246mTRACE layer_stack.cpp - ~layer_stack:17[0m] shutdown
-[[38;5;246m23:33:34:784[0m] [[38;5;246mTRACE window.cpp - ~window:111[0m] shutdown
-[[38;5;246m23:33:34:784[0m] [[38;5;246mTRACE application.cpp - ~application:76[0m] shutdown
+[[38;5;246m01:23:41:903[0m] [[38;5;246mTRACE application.cpp - application:40[0m] init
+[[38;5;246m01:23:41:903[0m] [[38;5;246mTRACE application.cpp - application:43[0m] init engine
+[[38;5;246m01:23:41:903[0m] [[38;5;246mTRACE window.cpp - window:31[0m] init
+[[38;5;246m01:23:41:920[0m] [[38;5;246mTRACE window.cpp - window:38[0m] GLFW initialized
+[[38;5;246m01:23:41:920[0m] [[38;5;246mTRACE window.cpp - window:66[0m] Monitor: 0 data: 1920 / 0 / 3440 / 1392
+[[38;5;246m01:23:41:923[0m] [[38;5;246mTRACE window.cpp - window:66[0m] Monitor: 1 data: 0 / 180 / 1920 / 1080
+[[38;5;246m01:23:42:039[0m] [[38;5;246mTRACE window.cpp - window:77[0m] Creating window [Small renderer width: 1592  height: 865]
+[[38;5;246m01:23:42:039[0m] [[38;5;246mTRACE window.cpp - window:81[0m] window pos [Small renderer X: 100  Y: 100]
+[[33m01:23:42:039[0m] [[33mWARN  window.cpp - set_vsync:220[0m] VSync functionality not supported yet
+[[38;5;246m01:23:42:039[0m] [[38;5;246mTRACE layer_stack.cpp - layer_stack:10[0m] init
+[[38;5;246m01:23:42:044[0m] [[38;5;246mTRACE GL_renderer.cpp - GL_renderer:34[0m] OpenGL Version: 4.6 (Core Profile) Mesa 24.2.8-1ubuntu1~24.04.1
+[[38;5;246m01:23:42:044[0m] [[38;5;246mTRACE GL_renderer.cpp - GL_renderer:35[0m] GLSL Version: 4.60
+[[38;5;246m01:23:42:044[0m] [[38;5;246mTRACE GL_renderer.cpp - GL_renderer:36[0m] Vendor: AMD
+[[38;5;246m01:23:42:044[0m] [[38;5;246mTRACE GL_renderer.cpp - GL_renderer:37[0m] Renderer: AMD Radeon Graphics (radeonsi, renoir, LLVM 19.1.1, DRM 3.57, 6.8.0-60-generic)
+[[38;5;246m01:23:42:055[0m] [[38;5;246mTRACE world_layer.cpp - world_layer:29[0m] init
+[[38;5;246m01:23:42:132[0m] [[38;5;246mTRACE world_layer.cpp - on_attach:63[0m] test mesh imported successfully
+[[38;5;246m01:23:42:132[0m] [[38;5;246mTRACE world_layer.cpp - on_attach:68[0m] attaching world_layer
+[[38;5;246m01:23:42:132[0m] [[38;5;246mTRACE imgui_layer.cpp - imgui_layer:69[0m] init
+[[38;5;246m01:23:42:132[0m] [[38;5;246mTRACE imgui_layer.cpp - on_attach:103[0m] attach imgui layer
+[[41m[30m01:23:44:117[0m] [[41m[30mFATAL crash_handler.cpp - signal_handler:62[0m] crash_hander caught signal [2]. flushing remaining logs

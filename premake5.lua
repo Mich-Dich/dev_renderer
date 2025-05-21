@@ -18,7 +18,7 @@ IncludeDir["ImGui"]             = "%{wks.location}/%{vendor_path.ImGui}"
 IncludeDir["tinyobjloader"]     = "%{wks.location}/%{vendor_path.tinyobjloader}"
 IncludeDir["stb_image"]         = "%{wks.location}/%{vendor_path.stb_image}"
 IncludeDir["ImGuizmo"]          = "%{wks.location}/%{vendor_path.ImGuizmo}"
-
+IncludeDir["assimp"]          	= "/usr/include/assimp"
 
 
 
@@ -80,6 +80,7 @@ project "gluttony"
 	{
 		"_CRT_SECURE_NO_WARNINGS",
 		"GLFW_INCLUDE_NONE",
+		"RENDERER_OPENGL",
 	}
 
 	files
@@ -106,14 +107,14 @@ project "gluttony"
 		"%{IncludeDir.stb_image}",
 		"%{IncludeDir.entt}",
 		"%{IncludeDir.ImGuizmo}",
+		"%{IncludeDir.assimp}",
 	}
 	
 	links
 	{
 		"ImGui",
+		"assimp",
 	}
-
-
 
 	libdirs 
 	{

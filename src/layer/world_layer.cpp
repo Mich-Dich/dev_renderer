@@ -8,8 +8,22 @@
 
 #include "world_layer.h"
 
+// ============= DEV-ONLY =============
+#include "application.h"
+#include "world/static_mesh.h"
+#include "factories/mesh/asset_importer.h"
+#include "engine/render/buffer.h"
+#include "engine/render/renderer.h"
+// ============= DEV-ONLY =============
+
+
 namespace GLT {
 	
+	// ============= DEV-ONLY =============
+	static ref<GLT::mesh::static_mesh> MAIN_RENDER_MESH = create_ref<GLT::mesh::static_mesh>();
+	ref<GLT::mesh::static_mesh> world_layer::GET_RENDER_MESH() { return MAIN_RENDER_MESH; }
+	// ============= DEV-ONLY =============
+
 	world_layer::world_layer() { 
 
 		LOG_INIT();
@@ -45,6 +59,12 @@ namespace GLT {
 		//float aspect = m_swapchain->get_extentAspectRatio();
 		//m_editor_camera.set_view_target(glm::vec3(-1.0f, -2.0f, -3.0f), glm::vec3(0.0f));
 		
+		// ============= DEV-ONLY =============
+		ASSERT(GLT::factory::mesh::load_mesh("/home/mich/Documents/gameassets_3D/_exports/basic_test_meshes/Barrel.glb", MAIN_RENDER_MESH), "test mesh imported successfully", "Failed to import test mesh");
+		MAIN_RENDER_MESH->create_buffers();
+		application::get().get_renderer()->upload_mesh(MAIN_RENDER_MESH);
+		// ============= DEV-ONLY =============
+
 		LOG(Trace, "attaching world_layer");
 	}
 
