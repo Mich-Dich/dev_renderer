@@ -1,24 +1,24 @@
 
 ========================================================
-Log initalized at [2025-05-22 01:23:41]
+Log initalized at [2025-05-22 01:36:55]
 ========================================================
-[[38;5;246m01:23:41:903[0m] [[38;5;246mTRACE application.cpp - application:40[0m] init
-[[38;5;246m01:23:41:903[0m] [[38;5;246mTRACE application.cpp - application:43[0m] init engine
-[[38;5;246m01:23:41:903[0m] [[38;5;246mTRACE window.cpp - window:31[0m] init
-[[38;5;246m01:23:41:920[0m] [[38;5;246mTRACE window.cpp - window:38[0m] GLFW initialized
-[[38;5;246m01:23:41:920[0m] [[38;5;246mTRACE window.cpp - window:66[0m] Monitor: 0 data: 1920 / 0 / 3440 / 1392
-[[38;5;246m01:23:41:923[0m] [[38;5;246mTRACE window.cpp - window:66[0m] Monitor: 1 data: 0 / 180 / 1920 / 1080
-[[38;5;246m01:23:42:039[0m] [[38;5;246mTRACE window.cpp - window:77[0m] Creating window [Small renderer width: 1592  height: 865]
-[[38;5;246m01:23:42:039[0m] [[38;5;246mTRACE window.cpp - window:81[0m] window pos [Small renderer X: 100  Y: 100]
-[[33m01:23:42:039[0m] [[33mWARN  window.cpp - set_vsync:220[0m] VSync functionality not supported yet
-[[38;5;246m01:23:42:039[0m] [[38;5;246mTRACE layer_stack.cpp - layer_stack:10[0m] init
-[[38;5;246m01:23:42:044[0m] [[38;5;246mTRACE GL_renderer.cpp - GL_renderer:34[0m] OpenGL Version: 4.6 (Core Profile) Mesa 24.2.8-1ubuntu1~24.04.1
-[[38;5;246m01:23:42:044[0m] [[38;5;246mTRACE GL_renderer.cpp - GL_renderer:35[0m] GLSL Version: 4.60
-[[38;5;246m01:23:42:044[0m] [[38;5;246mTRACE GL_renderer.cpp - GL_renderer:36[0m] Vendor: AMD
-[[38;5;246m01:23:42:044[0m] [[38;5;246mTRACE GL_renderer.cpp - GL_renderer:37[0m] Renderer: AMD Radeon Graphics (radeonsi, renoir, LLVM 19.1.1, DRM 3.57, 6.8.0-60-generic)
-[[38;5;246m01:23:42:055[0m] [[38;5;246mTRACE world_layer.cpp - world_layer:29[0m] init
-[[38;5;246m01:23:42:132[0m] [[38;5;246mTRACE world_layer.cpp - on_attach:63[0m] test mesh imported successfully
-[[38;5;246m01:23:42:132[0m] [[38;5;246mTRACE world_layer.cpp - on_attach:68[0m] attaching world_layer
-[[38;5;246m01:23:42:132[0m] [[38;5;246mTRACE imgui_layer.cpp - imgui_layer:69[0m] init
-[[38;5;246m01:23:42:132[0m] [[38;5;246mTRACE imgui_layer.cpp - on_attach:103[0m] attach imgui layer
-[[41m[30m01:23:44:117[0m] [[41m[30mFATAL crash_handler.cpp - signal_handler:62[0m] crash_hander caught signal [2]. flushing remaining logs
+[[38;5;246m01:36:55:863[0m] [[38;5;246mTRACE application.cpp - application:40[0m] init
+[[38;5;246m01:36:55:863[0m] [[38;5;246mTRACE application.cpp - application:43[0m] init engine
+[[38;5;246m01:36:55:863[0m] [[38;5;246mTRACE window.cpp - window:31[0m] init
+[[38;5;246m01:36:55:879[0m] [[38;5;246mTRACE window.cpp - window:38[0m] GLFW initialized
+[[38;5;246m01:36:55:880[0m] [[38;5;246mTRACE window.cpp - window:66[0m] Monitor: 0 data: 1920 / 0 / 3440 / 1392
+[[38;5;246m01:36:55:880[0m] [[38;5;246mTRACE window.cpp - window:66[0m] Monitor: 1 data: 0 / 180 / 1920 / 1080
+[[38;5;246m01:36:55:981[0m] [[38;5;246mTRACE window.cpp - window:77[0m] Creating window [Small renderer width: 1592  height: 865]
+[[38;5;246m01:36:55:981[0m] [[38;5;246mTRACE window.cpp - window:81[0m] window pos [Small renderer X: 100  Y: 100]
+[[33m01:36:55:981[0m] [[33mWARN  window.cpp - set_vsync:220[0m] VSync functionality not supported yet
+[[38;5;246m01:36:55:982[0m] [[38;5;246mTRACE layer_stack.cpp - layer_stack:10[0m] init
+[[38;5;246m01:36:55:985[0m] [[38;5;246mTRACE GL_renderer.cpp - GL_renderer:34[0m] OpenGL Version: 4.6 (Core Profile) Mesa 24.2.8-1ubuntu1~24.04.1
+[[38;5;246m01:36:55:985[0m] [[38;5;246mTRACE GL_renderer.cpp - GL_renderer:35[0m] GLSL Version: 4.60
+[[38;5;246m01:36:55:985[0m] [[38;5;246mTRACE GL_renderer.cpp - GL_renderer:36[0m] Vendor: AMD
+[[38;5;246m01:36:55:985[0m] [[38;5;246mTRACE GL_renderer.cpp - GL_renderer:37[0m] Renderer: AMD Radeon Graphics (radeonsi, renoir, LLVM 19.1.1, DRM 3.57, 6.8.0-60-generic)
+[[38;5;246m01:36:55:991[0m] [[38;5;246mTRACE world_layer.cpp - world_layer:29[0m] init
+[[38;5;246m01:36:56:052[0m] [[38;5;246mTRACE world_layer.cpp - on_attach:63[0m] test mesh imported successfully
+[[38;5;246m01:36:56:052[0m] [[38;5;246mTRACE world_layer.cpp - on_attach:68[0m] attaching world_layer
+[[38;5;246m01:36:56:052[0m] [[38;5;246mTRACE imgui_layer.cpp - imgui_layer:69[0m] init
+[[38;5;246m01:36:56:052[0m] [[38;5;246mTRACE imgui_layer.cpp - on_attach:103[0m] attach imgui layer
+[[41m[30m01:36:59:255[0m] [[41m[30mFATAL crash_handler.cpp - signal_handler:62[0m] crash_hander caught signal [2]. flushing remaining logs

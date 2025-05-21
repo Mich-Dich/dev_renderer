@@ -78,36 +78,39 @@ namespace GLT::render::open_GL {
     }
     
     
-    void GL_renderer::draw_frame(float delta_time) {
+    void GL_renderer::draw_frame(f32 delta_time) {
     
 #ifdef DEBUG
 		m_general_performance_metrik.next_iteration();
         glBeginQuery(GL_TIME_ELAPSED, m_total_render_time);
 #endif
 
+
+#if 1
         // ----------------------------------------------------------
         // Geometry Pass: Render scene to G-buffer
         // ----------------------------------------------------------
-        // glBindFramebuffer(GL_FRAMEBUFFER, m_gbuffer.FBO);
-        // glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        // glUseProgram(m_geometry_shader);
+        glBindFramebuffer(GL_FRAMEBUFFER, m_gbuffer.FBO);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glUseProgram(m_geometry_shader);
 
-        // // Update matrices
-        // m_viewMatrix = glm::lookAt(m_cameraPos, m_cameraPos + m_cameraFront, m_cameraUp);
-        // glUniformMatrix4fv(m_geometry_shader_view_loc, 1, GL_FALSE, glm::value_ptr(m_viewMatrix));
+        // Update matrices
+        m_viewMatrix = glm::lookAt(m_cameraPos, m_cameraPos + m_cameraFront, m_cameraUp);
+        glUniformMatrix4fv(m_geometry_shader_view_loc, 1, GL_FALSE, glm::value_ptr(m_viewMatrix));
 
-        // // Draw mesh
-        // auto mesh = application::get().get_world_layer()->GET_RENDER_MESH();
-        // glBindVertexArray(mesh->vao);
-        // glUniformMatrix4fv(m_geometry_shader_model_loc, 1, GL_FALSE, glm::value_ptr(mesh->transform));
-        // glDrawElements(GL_TRIANGLES, mesh->indices.size(), GL_UNSIGNED_INT, 0);
+        // Draw mesh
+        auto mesh = application::get().get_world_layer()->GET_RENDER_MESH();
+        glBindVertexArray(mesh->vao);
+        glUniformMatrix4fv(m_geometry_shader_model_loc, 1, GL_FALSE, glm::value_ptr(mesh->transform));
+        glDrawElements(GL_TRIANGLES, mesh->indices.size(), GL_UNSIGNED_INT, 0);
 
         // ----------------------------------------------------------
         // Lighting Pass: Render fullscreen quad with lighting calculation
         // ----------------------------------------------------------
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
         glClearColor(1.0, 0.0, 0.0, 1.0);  // Red clear for testing
-        glClear(GL_COLOR_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        
         glUseProgram(m_lighting_shader);
         glUniform1i(glGetUniformLocation(m_lighting_shader, "gPosition"), 0);
         glUniform1i(glGetUniformLocation(m_lighting_shader, "gNormal"), 1);
@@ -141,6 +144,47 @@ namespace GLT::render::open_GL {
 
         // Swap buffers
         glfwSwapBuffers(m_window->get_window());        // TODO: move to window and make renderer a friend
+#else
+        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    
+        glUseProgram(m_lighting_shader);
+    
+        // Set uniforms
+        GLint loc_resolution = glGetUniformLocation(m_lighting_shader, "u_resolution");
+        GLint loc_mouse = glGetUniformLocation(m_lighting_shader, "u_mouse");
+        GLint loc_time = glGetUniformLocation(m_lighting_shader, "u_time");
+    
+        const int width = m_window->get_width();
+        const int height = m_window->get_height();
+        glUniform2f(loc_resolution, (float)width, (float)height);
+    
+        m_window->get_mouse_position(mouse_pos);
+        glUniform2f(loc_mouse, mouse_pos.x, (height - mouse_pos.y)); // Flip Y
+    
+        static float totalTime = 0.0f;
+        totalTime += delta_time;
+        glUniform1f(loc_time, totalTime);
+    
+        // Draw fullscreen quad
+        glBindVertexArray(m_vao);
+        glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+        glBindVertexArray(0);
+    
+        // start new ImGui frame
+        ImGui_ImplOpenGL3_NewFrame();
+        ImGui_ImplGlfw_NewFrame();
+        ImGui::NewFrame();
+
+        for (layer* layer : *renderer::m_layer_stack) 
+            layer->on_imgui_render();
+
+        ImGui::Render();
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+        // Swap buffers
+        glfwSwapBuffers(m_window->get_window());
+#endif
 
 #ifdef DEBUG
         glEndQuery(GL_TIME_ELAPSED);
@@ -164,7 +208,7 @@ namespace GLT::render::open_GL {
         glUseProgram(m_geometry_shader);
         glm::mat4 projection = glm::perspective(
             glm::radians(45.0f),
-            static_cast<float>(width) / height,
+            static_cast<f32>(width) / height,
             0.1f, 100.0f
         );
         glUniformMatrix4fv(m_geometry_shader_proj_loc, 1, GL_FALSE, glm::value_ptr(projection));
@@ -253,7 +297,7 @@ namespace GLT::render::open_GL {
         glUseProgram(m_geometry_shader);
         glm::mat4 projection = glm::perspective(
             glm::radians(45.0f), 
-            static_cast<float>(m_window->get_width()) / m_window->get_height(),
+            static_cast<f32>(m_window->get_width()) / m_window->get_height(),
             0.1f, 100.0f
         );
         glUniformMatrix4fv(m_geometry_shader_proj_loc, 1, GL_FALSE, glm::value_ptr(projection));
@@ -355,7 +399,7 @@ namespace GLT::render::open_GL {
 
     void GL_renderer::create_fullscreen_quad() {
         
-        float vertices[] = {
+        f32 vertices[] = {
             // positions   // texCoords
             -1.0,  1.0,    0.0, 1.0,
             -1.0, -1.0,    0.0, 0.0,
@@ -371,11 +415,11 @@ namespace GLT::render::open_GL {
         glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
     
         // Position attribute
-        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
+        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(f32), (void*)0);
         glEnableVertexAttribArray(0);
     
         // Texture coordinate attribute
-        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
+        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(f32), (void*)(2 * sizeof(f32)));
         glEnableVertexAttribArray(1);
     
         glBindBuffer(GL_ARRAY_BUFFER, 0);
