@@ -17,6 +17,14 @@
 
 #include "GL_renderer.h"
 
+#ifdef DEBUG
+    #define END_TIMER               glEndQuery(GL_TIME_ELAPSED);
+    #define START_TIMER(variable)   glBeginQuery(GL_TIME_ELAPSED, variable);
+#else
+    #define END_TIMER
+    #define START_TIMER(variable)
+#endif
+
 
 namespace GLT::render::open_GL {
 
@@ -50,8 +58,13 @@ namespace GLT::render::open_GL {
         glCullFace(GL_BACK);
 
 #ifdef DEBUG
-        glGenQueries(1, &m_total_render_time);
+        GLuint queries[3];
+        glGenQueries(3, queries);
+        m_query_total     = queries[0];
+        m_query_geometry  = queries[1];
+        m_query_lighting  = queries[2];
 #endif
+
     }
     
     GL_renderer::~GL_renderer() {
@@ -82,14 +95,14 @@ namespace GLT::render::open_GL {
     
 #ifdef DEBUG
 		m_general_performance_metrik.next_iteration();
-        glBeginQuery(GL_TIME_ELAPSED, m_total_render_time);
+        START_TIMER(m_query_total);
 #endif
 
-
-#if 1
         // ----------------------------------------------------------
         // Geometry Pass: Render scene to G-buffer
         // ----------------------------------------------------------
+        START_TIMER(m_query_geometry);
+
         glBindFramebuffer(GL_FRAMEBUFFER, m_gbuffer.FBO);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glUseProgram(m_geometry_shader);
@@ -99,35 +112,51 @@ namespace GLT::render::open_GL {
         glUniformMatrix4fv(m_geometry_shader_view_loc, 1, GL_FALSE, glm::value_ptr(m_viewMatrix));
 
         // Draw mesh
-        auto mesh = application::get().get_world_layer()->GET_RENDER_MESH();
+        ref<GLT::mesh::static_mesh> mesh = application::get().get_world_layer()->GET_RENDER_MESH();
         glBindVertexArray(mesh->vao);
         glUniformMatrix4fv(m_geometry_shader_model_loc, 1, GL_FALSE, glm::value_ptr(mesh->transform));
         glDrawElements(GL_TRIANGLES, mesh->indices.size(), GL_UNSIGNED_INT, 0);
 
+        END_TIMER; // ends m_query_geometry
+
         // ----------------------------------------------------------
         // Lighting Pass: Render fullscreen quad with lighting calculation
         // ----------------------------------------------------------
+        START_TIMER(m_query_lighting);
+
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
-        glClearColor(1.0, 0.0, 0.0, 1.0);  // Red clear for testing
+        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         
         glUseProgram(m_lighting_shader);
-        glUniform1i(glGetUniformLocation(m_lighting_shader, "gPosition"), 0);
-        glUniform1i(glGetUniformLocation(m_lighting_shader, "gNormal"), 1);
-        glUniform1i(glGetUniformLocation(m_lighting_shader, "gAlbedoSpec"), 2);
 
-        // Bind G-buffer textures
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, m_gbuffer.position);
-        glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, m_gbuffer.normal);
-        glActiveTexture(GL_TEXTURE2);
-        glBindTexture(GL_TEXTURE_2D, m_gbuffer.albedo_spec);
+        glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, mesh->vertex_ssbo);
+        glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, mesh->index_ssbo);
+        glUniform1ui(glGetUniformLocation(m_lighting_shader, "numIndices"), mesh->indices.size());
+        LOG(Trace, "Binding mesh indecies: " << mesh->indices.size() << " vertex SSBO: " << mesh->vertex_ssbo << " index SSBO: " << mesh->index_ssbo)
+
+        // Camera setup
+        glm::mat4 projection = glm::perspective(
+            glm::radians(45.0f),
+            static_cast<f32>(m_window->get_width()) / m_window->get_height(),
+            0.01f, 1000.0f
+        );
+        glm::mat4 view = glm::lookAt(m_cameraPos, m_cameraPos + m_cameraFront, m_cameraUp);
+        glm::mat4 invProjection = glm::inverse(projection);
+        glm::mat4 invView = glm::inverse(view);
+
+        glUniform3fv(glGetUniformLocation(m_lighting_shader, "cameraPos"), 1, glm::value_ptr(m_cameraPos));
+        glUniformMatrix4fv(glGetUniformLocation(m_lighting_shader, "invProjection"), 1, GL_FALSE, glm::value_ptr(invProjection));
+        glUniformMatrix4fv(glGetUniformLocation(m_lighting_shader, "invView"), 1, GL_FALSE, glm::value_ptr(invView));
+        glUniformMatrix4fv(glGetUniformLocation(m_lighting_shader, "model"), 1, GL_FALSE, glm::value_ptr(mesh->transform));
+        glUniform2fv(glGetUniformLocation(m_lighting_shader, "screenSize"), 1, glm::value_ptr(glm::vec2(m_window->get_width(), m_window->get_height())));
 
         // Draw fullscreen quad
         glBindVertexArray(m_vao);
         glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
         glBindVertexArray(0);
+
+        END_TIMER; // ends m_query_lighting
 
         // ----------------------------------------------------------
         // Render UI
@@ -144,57 +173,26 @@ namespace GLT::render::open_GL {
 
         // Swap buffers
         glfwSwapBuffers(m_window->get_window());        // TODO: move to window and make renderer a friend
-#else
-        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    
-        glUseProgram(m_lighting_shader);
-    
-        // Set uniforms
-        GLint loc_resolution = glGetUniformLocation(m_lighting_shader, "u_resolution");
-        GLint loc_mouse = glGetUniformLocation(m_lighting_shader, "u_mouse");
-        GLint loc_time = glGetUniformLocation(m_lighting_shader, "u_time");
-    
-        const int width = m_window->get_width();
-        const int height = m_window->get_height();
-        glUniform2f(loc_resolution, (float)width, (float)height);
-    
-        m_window->get_mouse_position(mouse_pos);
-        glUniform2f(loc_mouse, mouse_pos.x, (height - mouse_pos.y)); // Flip Y
-    
-        static float totalTime = 0.0f;
-        totalTime += delta_time;
-        glUniform1f(loc_time, totalTime);
-    
-        // Draw fullscreen quad
-        glBindVertexArray(m_vao);
-        glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-        glBindVertexArray(0);
-    
-        // start new ImGui frame
-        ImGui_ImplOpenGL3_NewFrame();
-        ImGui_ImplGlfw_NewFrame();
-        ImGui::NewFrame();
-
-        for (layer* layer : *renderer::m_layer_stack) 
-            layer->on_imgui_render();
-
-        ImGui::Render();
-        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
-        // Swap buffers
         glfwSwapBuffers(m_window->get_window());
-#endif
 
 #ifdef DEBUG
-        glEndQuery(GL_TIME_ELAPSED);
-        GLint available = 0;
-        while (!available)
-            glGetQueryObjectiv(m_total_render_time, GL_QUERY_RESULT_AVAILABLE, &available);
+        END_TIMER; // ends m_query_total
 
-        GLuint64 elapsed_time;
-        glGetQueryObjectui64v(m_total_render_time, GL_QUERY_RESULT, &elapsed_time);
-        m_general_performance_metrik.renderer_draw_time[m_general_performance_metrik.current_index] = elapsed_time / 1e6f;
+        // Wait for all three results to become available
+        GLuint available = 0;
+        while (!available) {
+            glGetQueryObjectiv(m_query_total, GL_QUERY_RESULT_AVAILABLE, (GLint*)&available);
+        }
+
+        GLuint64 time_total, time_geom, time_light;
+        glGetQueryObjectui64v(m_query_total,    GL_QUERY_RESULT, &time_total);
+        glGetQueryObjectui64v(m_query_geometry, GL_QUERY_RESULT, &time_geom);
+        glGetQueryObjectui64v(m_query_lighting, GL_QUERY_RESULT, &time_light);
+
+        // Convert from nanoseconds to milliseconds:
+        m_general_performance_metrik.renderer_draw_time[m_general_performance_metrik.current_index]     = time_total  / 1e6;
+        m_general_performance_metrik.geometry_pass_time[m_general_performance_metrik.current_index]     = time_geom   / 1e6;
+        m_general_performance_metrik.lighting_pass_time[m_general_performance_metrik.current_index]     = time_light  / 1e6;
 #endif
     }
     
@@ -256,7 +254,7 @@ namespace GLT::render::open_GL {
         glDeleteShader(fragShader);
 
         LOG(Info, "Shader program reloaded from " << frag_file);
-        m_total_time = 0.f;
+        m_time_total = 0.f;
     }
 
 
@@ -333,6 +331,19 @@ namespace GLT::render::open_GL {
         
         glEnableVertexAttribArray(2);
         glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(GLT::mesh::vertex), (void*)offsetof(GLT::mesh::vertex, texcoord));
+
+        // Create SSBOs for ray tracing
+        if (mesh->vertex_ssbo == 0) {
+            glGenBuffers(1, &mesh->vertex_ssbo);
+            glBindBuffer(GL_SHADER_STORAGE_BUFFER, mesh->vertex_ssbo);
+            glBufferData(GL_SHADER_STORAGE_BUFFER, mesh->vertices.size() * sizeof(GLT::mesh::vertex), mesh->vertices.data(), GL_STATIC_DRAW);
+        }
+
+        if (mesh->index_ssbo == 0) {
+            glGenBuffers(1, &mesh->index_ssbo);
+            glBindBuffer(GL_SHADER_STORAGE_BUFFER, mesh->index_ssbo);
+            glBufferData(GL_SHADER_STORAGE_BUFFER, mesh->indices.size() * sizeof(u32), mesh->indices.data(), GL_STATIC_DRAW);
+        }
 
         glBindVertexArray(0);
     }

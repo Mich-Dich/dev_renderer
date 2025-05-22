@@ -163,8 +163,6 @@ namespace GLT::UI {
 	void imgui_layer::on_event(event& event) { }
 
 
-	
-
 	void show_directory_tree(const std::filesystem::path& dir_path, const bool default_open, const std::function<void(const std::filesystem::path&)>& on_shader_select) {
 			
 		if (!std::filesystem::is_directory(dir_path)) {
@@ -212,15 +210,14 @@ namespace GLT::UI {
 		PROFILE_FUNCTION();
 		ImGui::SetCurrentContext(m_context);
 
-		UI::set_next_window_pos(window_pos::top_left, 4.f);
-		ImGui::SetNextWindowBgAlpha(0.5f);
-		ImGui::Begin("Test", nullptr, ImGuiWindowFlags_AlwaysAutoResize); {
+		// UI::set_next_window_pos(window_pos::top_left, 4.f);
+		// ImGui::SetNextWindowBgAlpha(0.5f);
+		// ImGui::Begin("Test", nullptr, ImGuiWindowFlags_AlwaysAutoResize); {
 
-			std::filesystem::path base_path = GLT::util::get_executable_path() / std::filesystem::path("..") / "shaders";
+		// 	std::filesystem::path base_path = GLT::util::get_executable_path() / std::filesystem::path("..") / "shaders";
+		// 	show_directory_tree(base_path, true, [this](const std::filesystem::path& shader_path) { application::get().get_renderer()->reload_fragment_shader(shader_path); });
 
-			show_directory_tree(base_path, true, [this](const std::filesystem::path& shader_path) { application::get().get_renderer()->reload_fragment_shader(shader_path); });
-
-		} ImGui::End();
+		// } ImGui::End();
 
 		show_renderer_metrik();
 	}
@@ -268,13 +265,16 @@ namespace GLT::UI {
 				UI::shift_cursor_pos(0, 10);
 
 				static const auto renderer_draw_plot_col = ImVec4(0.f, 0.61f, 0.f, 1.00f);
-				static const auto draw_geometry_plot_col = ImVec4(0.f, 0.9f, 1.f, 1.00f);
+				static const auto geometry_pass_plot_col = ImVec4(0.f, 0.9f, 1.f, 1.00f);
+				static const auto lighting_pass_plot_col = ImVec4(0.f, 0.9f, 1.f, 1.00f);
 				static const auto waiting_idle_plot_col = ImVec4(0.9f, 0.f, 1.f, 1.00f);
 
 				// calc the maximum value but ensuring its atleast 1.f
-				const f32 plot_max_value = math::max(1.f,	math::max(math::calc_array_max(metrik->renderer_draw_time, 100), math::max(
-															math::calc_array_max(metrik->draw_geometry_time, 100),
-															math::calc_array_max(metrik->waiting_idle_time, 100))));
+				const f32 plot_max_value = math::max(1.f,	math::max(math::calc_array_max(metrik->renderer_draw_time, 200),
+															math::max(math::calc_array_max(metrik->geometry_pass_time, 200),
+															math::max(math::calc_array_max(metrik->lighting_pass_time, 200),
+																math::calc_array_max(metrik->waiting_idle_time, 200)
+															))));
 
 				ImVec2 cursor_pos = ImGui::GetCursorPos();
 				ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
@@ -285,13 +285,18 @@ namespace GLT::UI {
 				ImGui::PopStyleColor();
 
 				ImGui::SetCursorPos(cursor_pos);
-				ImGui::PushStyleColor(ImGuiCol_PlotLines, draw_geometry_plot_col);
-				ImGui::PlotLines("##metrik_draw_geometry_time", metrik->draw_geometry_time, 200, metrik->current_index, (const char*)0, 0.0f, plot_max_value, ImVec2(280, 100));
+				ImGui::PushStyleColor(ImGuiCol_PlotLines, geometry_pass_plot_col);
+				ImGui::PlotLines("##metrik_geometry_pass_time", metrik->geometry_pass_time, 200, metrik->current_index, (const char*)0, 0.0f, plot_max_value, ImVec2(280, 100));
+				ImGui::PopStyleColor();
+
+				ImGui::SetCursorPos(cursor_pos);
+				ImGui::PushStyleColor(ImGuiCol_PlotLines, lighting_pass_plot_col);
+				ImGui::PlotLines("##metrik_lighting_pass_time", metrik->lighting_pass_time, 200, metrik->current_index, (const char*)0, 0.0f, plot_max_value, ImVec2(280, 100));
 				ImGui::PopStyleColor();
 
 				ImGui::SetCursorPos(cursor_pos);
 				ImGui::PushStyleColor(ImGuiCol_PlotLines, waiting_idle_plot_col);
-				ImGui::PlotLines("##metrik_draw_geometry_time", metrik->waiting_idle_time, 200, metrik->current_index, (const char*)0, 0.0f, plot_max_value, ImVec2(280, 100));
+				ImGui::PlotLines("##metrik_waiting_idle_time", metrik->waiting_idle_time, 200, metrik->current_index, (const char*)0, 0.0f, plot_max_value, ImVec2(280, 100));
 				ImGui::PopStyleColor();
 
 				ImGui::PopStyleColor();
@@ -395,11 +400,10 @@ namespace GLT::UI {
 				// }
 	#endif
 
-				ImGui::TextColored(renderer_draw_plot_col, "- render total %5.2f ms", metrik->renderer_draw_time[metrik->current_index]);
-				ImGui::SameLine();
-				ImGui::TextColored(draw_geometry_plot_col, " - drawing geometry %5.2f ms", metrik->draw_geometry_time[metrik->current_index]);
-
-				ImGui::TextColored(waiting_idle_plot_col, " - waiting for GPU %5.2f ms", metrik->waiting_idle_time[metrik->current_index]);
+				ImGui::TextColored(renderer_draw_plot_col, "render draw total %5.2f ms", metrik->renderer_draw_time[metrik->current_index]);
+				ImGui::TextColored(geometry_pass_plot_col, "geometry pass %5.2f ms", metrik->geometry_pass_time[metrik->current_index]);
+				ImGui::TextColored(lighting_pass_plot_col, "lighting pass %5.2f ms", metrik->lighting_pass_time[metrik->current_index]);
+				ImGui::TextColored(waiting_idle_plot_col, "waiting for GPU %5.2f ms", metrik->waiting_idle_time[metrik->current_index]);
 			}
 
 			if (ImGui::BeginPopupContextWindow()) {

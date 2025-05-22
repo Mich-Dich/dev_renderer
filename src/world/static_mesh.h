@@ -5,11 +5,13 @@
 
 namespace GLT::mesh {
 
+    #pragma pack(push, 1)
     struct vertex {
-        float position[3];
-        float normal[3];
-        float texcoord[2];
+        glm::vec3 position;
+        glm::vec3 normal;
+        glm::vec2 texcoord;
     };
+    #pragma pack(pop)
 
     struct static_mesh {
         std::vector<vertex>         vertices{};
@@ -19,6 +21,9 @@ namespace GLT::mesh {
         GLT::render::buffer         vertex_buffer{GLT::render::buffer::type::VERTEX, GLT::render::buffer::usage::STATIC};
         GLT::render::buffer         index_buffer{GLT::render::buffer::type::INDEX, GLT::render::buffer::usage::STATIC};
         u32 vao = 0;
+
+        u32 vertex_ssbo = 0;
+        u32 index_ssbo = 0;
 
         void create_buffers() {
 

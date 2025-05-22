@@ -60,7 +60,7 @@ namespace GLT {
 		//m_editor_camera.set_view_target(glm::vec3(-1.0f, -2.0f, -3.0f), glm::vec3(0.0f));
 		
 		// ============= DEV-ONLY =============
-		ASSERT(GLT::factory::mesh::load_mesh("/home/mich/Documents/gameassets_3D/_exports/basic_test_meshes/Barrel.glb", MAIN_RENDER_MESH), "test mesh imported successfully", "Failed to import test mesh");
+		ASSERT(GLT::factory::mesh::load_mesh("/home/mich/Documents/gameassets_3D/_exports/basic_test_meshes/box.glb", MAIN_RENDER_MESH), "test mesh imported successfully", "Failed to import test mesh");
 		MAIN_RENDER_MESH->create_buffers();
 		application::get().get_renderer()->upload_mesh(MAIN_RENDER_MESH);
 		// ============= DEV-ONLY =============

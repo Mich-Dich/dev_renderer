@@ -1,24 +1,391 @@
 
 ========================================================
-Log initalized at [2025-05-22 01:36:55]
+Log initalized at [2025-05-22 09:12:40]
 ========================================================
-[[38;5;246m01:36:55:863[0m] [[38;5;246mTRACE application.cpp - application:40[0m] init
-[[38;5;246m01:36:55:863[0m] [[38;5;246mTRACE application.cpp - application:43[0m] init engine
-[[38;5;246m01:36:55:863[0m] [[38;5;246mTRACE window.cpp - window:31[0m] init
-[[38;5;246m01:36:55:879[0m] [[38;5;246mTRACE window.cpp - window:38[0m] GLFW initialized
-[[38;5;246m01:36:55:880[0m] [[38;5;246mTRACE window.cpp - window:66[0m] Monitor: 0 data: 1920 / 0 / 3440 / 1392
-[[38;5;246m01:36:55:880[0m] [[38;5;246mTRACE window.cpp - window:66[0m] Monitor: 1 data: 0 / 180 / 1920 / 1080
-[[38;5;246m01:36:55:981[0m] [[38;5;246mTRACE window.cpp - window:77[0m] Creating window [Small renderer width: 1592  height: 865]
-[[38;5;246m01:36:55:981[0m] [[38;5;246mTRACE window.cpp - window:81[0m] window pos [Small renderer X: 100  Y: 100]
-[[33m01:36:55:981[0m] [[33mWARN  window.cpp - set_vsync:220[0m] VSync functionality not supported yet
-[[38;5;246m01:36:55:982[0m] [[38;5;246mTRACE layer_stack.cpp - layer_stack:10[0m] init
-[[38;5;246m01:36:55:985[0m] [[38;5;246mTRACE GL_renderer.cpp - GL_renderer:34[0m] OpenGL Version: 4.6 (Core Profile) Mesa 24.2.8-1ubuntu1~24.04.1
-[[38;5;246m01:36:55:985[0m] [[38;5;246mTRACE GL_renderer.cpp - GL_renderer:35[0m] GLSL Version: 4.60
-[[38;5;246m01:36:55:985[0m] [[38;5;246mTRACE GL_renderer.cpp - GL_renderer:36[0m] Vendor: AMD
-[[38;5;246m01:36:55:985[0m] [[38;5;246mTRACE GL_renderer.cpp - GL_renderer:37[0m] Renderer: AMD Radeon Graphics (radeonsi, renoir, LLVM 19.1.1, DRM 3.57, 6.8.0-60-generic)
-[[38;5;246m01:36:55:991[0m] [[38;5;246mTRACE world_layer.cpp - world_layer:29[0m] init
-[[38;5;246m01:36:56:052[0m] [[38;5;246mTRACE world_layer.cpp - on_attach:63[0m] test mesh imported successfully
-[[38;5;246m01:36:56:052[0m] [[38;5;246mTRACE world_layer.cpp - on_attach:68[0m] attaching world_layer
-[[38;5;246m01:36:56:052[0m] [[38;5;246mTRACE imgui_layer.cpp - imgui_layer:69[0m] init
-[[38;5;246m01:36:56:052[0m] [[38;5;246mTRACE imgui_layer.cpp - on_attach:103[0m] attach imgui layer
-[[41m[30m01:36:59:255[0m] [[41m[30mFATAL crash_handler.cpp - signal_handler:62[0m] crash_hander caught signal [2]. flushing remaining logs
+[[38;5;246m09:12:40:148[0m] [[38;5;246mTRACE application.cpp - application:40[0m] init
+[[38;5;246m09:12:40:148[0m] [[38;5;246mTRACE application.cpp - application:43[0m] init engine
+[[38;5;246m09:12:40:148[0m] [[38;5;246mTRACE window.cpp - window:31[0m] init
+[[38;5;246m09:12:40:167[0m] [[38;5;246mTRACE window.cpp - window:38[0m] GLFW initialized
+[[38;5;246m09:12:40:167[0m] [[38;5;246mTRACE window.cpp - window:66[0m] Monitor: 0 data: 1920 / 0 / 3440 / 1392
+[[38;5;246m09:12:40:167[0m] [[38;5;246mTRACE window.cpp - window:66[0m] Monitor: 1 data: 0 / 180 / 1920 / 1080
+[[38;5;246m09:12:40:439[0m] [[38;5;246mTRACE window.cpp - window:77[0m] Creating window [Small renderer width: 1592  height: 865]
+[[38;5;246m09:12:40:439[0m] [[38;5;246mTRACE window.cpp - window:81[0m] window pos [Small renderer X: 100  Y: 100]
+[[33m09:12:40:439[0m] [[33mWARN  window.cpp - set_vsync:220[0m] VSync functionality not supported yet
+[[38;5;246m09:12:40:439[0m] [[38;5;246mTRACE layer_stack.cpp - layer_stack:10[0m] init
+[[38;5;246m09:12:40:442[0m] [[38;5;246mTRACE GL_renderer.cpp - GL_renderer:42[0m] OpenGL Version: 4.6 (Core Profile) Mesa 24.2.8-1ubuntu1~24.04.1
+[[38;5;246m09:12:40:442[0m] [[38;5;246mTRACE GL_renderer.cpp - GL_renderer:43[0m] GLSL Version: 4.60
+[[38;5;246m09:12:40:442[0m] [[38;5;246mTRACE GL_renderer.cpp - GL_renderer:44[0m] Vendor: AMD
+[[38;5;246m09:12:40:442[0m] [[38;5;246mTRACE GL_renderer.cpp - GL_renderer:45[0m] Renderer: AMD Radeon Graphics (radeonsi, renoir, LLVM 19.1.1, DRM 3.57, 6.8.0-60-generic)
+[[38;5;246m09:12:40:462[0m] [[38;5;246mTRACE world_layer.cpp - world_layer:29[0m] init
+[[38;5;246m09:12:40:462[0m] [[38;5;246mTRACE world_layer.cpp - on_attach:63[0m] test mesh imported successfully
+[[38;5;246m09:12:40:463[0m] [[38;5;246mTRACE world_layer.cpp - on_attach:68[0m] attaching world_layer
+[[38;5;246m09:12:40:463[0m] [[38;5;246mTRACE imgui_layer.cpp - imgui_layer:69[0m] init
+[[38;5;246m09:12:40:463[0m] [[38;5;246mTRACE imgui_layer.cpp - on_attach:103[0m] attach imgui layer
+[[38;5;246m09:12:40:512[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:40:591[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:40:607[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:40:623[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:40:640[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:40:656[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:40:673[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:40:689[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:40:705[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:40:721[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:40:737[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:40:753[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:40:770[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:40:785[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:40:802[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:40:817[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:40:834[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:40:851[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:40:867[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:40:884[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:40:900[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:40:916[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:40:933[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:40:948[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:40:965[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:40:981[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:40:998[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:41:014[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:41:030[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:41:046[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:41:062[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:41:078[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:41:095[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:41:112[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:41:128[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:41:144[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:41:160[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:41:176[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:41:192[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:41:209[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:41:225[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:41:241[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:41:258[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:41:274[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:41:290[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:41:306[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:41:322[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:41:338[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:41:354[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:41:370[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:41:386[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:41:402[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:41:418[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:41:434[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:41:450[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:41:466[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:41:483[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:41:499[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:41:515[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:41:531[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:41:547[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:41:563[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:41:579[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:41:595[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:41:611[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:41:628[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:41:644[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:41:660[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:41:676[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:41:692[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:41:709[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:41:725[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:41:741[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:41:757[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:41:773[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:41:790[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:41:806[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:41:822[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:41:838[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:41:854[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:41:871[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:41:887[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:41:903[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:41:919[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:41:935[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:41:951[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:41:967[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:41:984[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:42:000[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:42:016[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:42:032[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:42:048[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:42:064[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:42:080[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:42:096[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:42:112[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:42:128[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:42:145[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:42:161[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:42:177[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:42:193[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:42:209[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:42:225[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:42:241[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:42:257[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:42:273[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:42:289[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:42:305[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:42:322[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:42:338[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:42:354[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:42:370[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:42:386[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:42:402[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:42:418[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:42:434[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:42:450[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:42:467[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:42:483[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:42:500[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:42:515[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:42:532[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:42:548[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:42:564[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:42:581[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:42:597[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:42:613[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:42:629[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:42:646[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:42:662[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:42:678[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:42:694[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:42:710[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:42:727[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:42:743[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:42:759[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:42:775[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:42:791[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:42:807[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:42:824[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:42:840[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:42:856[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:42:873[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:42:889[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:42:905[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:42:921[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:42:937[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:42:953[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:42:969[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:42:985[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:43:001[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:43:017[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:43:034[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:43:050[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:43:066[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:43:082[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:43:098[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:43:114[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:43:130[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:43:147[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:43:162[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:43:179[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:43:195[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:43:211[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:43:227[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:43:243[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:43:260[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:43:276[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:43:291[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:43:307[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:43:324[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:43:340[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:43:356[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:43:372[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:43:388[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:43:404[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:43:421[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:43:437[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:43:453[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:43:469[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:43:485[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:43:501[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:43:517[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:43:533[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:43:549[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:43:565[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:43:581[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:43:598[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:43:614[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:43:631[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:43:647[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:43:663[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:43:679[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:43:695[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:43:711[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:43:727[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:43:743[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:43:759[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:43:775[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:43:791[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:43:808[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:43:824[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:43:840[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:43:856[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:43:872[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:43:888[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:43:904[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:43:920[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:43:937[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:43:952[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:43:969[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:43:988[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:44:008[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:44:029[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:44:049[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:44:067[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:44:087[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:44:108[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:44:128[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:44:150[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:44:167[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:44:187[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:44:208[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:44:228[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:44:250[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:44:267[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:44:305[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:44:321[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:44:337[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:44:353[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:44:370[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:44:389[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:44:408[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:44:427[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:44:449[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:44:467[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:44:488[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:44:507[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:44:529[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:44:550[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:44:567[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:44:588[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:44:608[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:44:628[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:44:649[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:44:667[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:44:688[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:44:708[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:44:728[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:44:750[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:44:767[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:44:788[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:44:808[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:44:828[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:44:849[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:44:868[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:44:887[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:44:907[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:44:928[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:44:949[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:44:967[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:44:989[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:45:007[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:45:029[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:45:052[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:45:068[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:45:088[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:45:108[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:45:128[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:45:149[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:45:167[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:45:188[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:45:208[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:45:228[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:45:250[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:45:267[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:45:289[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:45:308[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:45:328[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:45:351[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:45:373[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:45:390[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:45:408[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:45:429[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:45:449[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:45:467[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:45:489[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:45:507[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:45:529[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:45:551[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:45:567[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:45:588[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:45:608[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:45:628[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:45:649[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:45:667[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:45:688[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:45:708[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:45:728[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:45:750[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:45:768[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:45:789[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:45:808[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:45:828[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:45:850[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:45:868[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:45:889[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:45:908[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:45:928[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:45:950[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:45:968[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:45:990[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:46:008[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:46:032[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:46:050[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:46:067[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:46:088[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:46:108[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:46:128[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:46:149[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:46:168[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:46:188[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:46:208[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:46:228[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:46:251[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:46:268[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:46:288[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:46:308[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:46:328[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:46:350[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:46:368[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:46:389[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:46:409[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:46:428[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:46:450[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:46:468[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:46:489[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:46:508[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:46:532[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:46:550[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:46:569[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:46:589[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:46:608[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:46:628[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:46:650[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:46:668[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:46:689[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:46:708[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:46:728[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:46:749[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:46:768[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:46:788[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:46:808[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:46:828[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:46:850[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:46:868[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:46:889[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:46:908[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:46:928[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:46:951[0m] [[38;5;246mTRACE GL_renderer.cpp - draw_frame:136[0m] Binding mesh indecies: 36 vertex SSBO: 4 index SSBO: 5
+[[38;5;246m09:12:46:968[0m] [[38;5;246mTRACE application.cpp - run:103[0m] Exiting main run loop
+[[38;5;246m09:12:46:969[0m] [[38;5;246mTRACE imgui_layer.cpp - on_detach:150[0m] detach imgui layer
+[[38;5;246m09:12:46:969[0m] [[38;5;246mTRACE imgui_layer.cpp - ~imgui_layer:97[0m] shutdown
+[[38;5;246m09:12:46:970[0m] [[38;5;246mTRACE world_layer.cpp - on_detach:76[0m] detaching world_layer
+[[38;5;246m09:12:46:970[0m] [[38;5;246mTRACE world_layer.cpp - ~world_layer:34[0m] shutdown
+[[38;5;246m09:12:46:970[0m] [[38;5;246mTRACE layer_stack.cpp - ~layer_stack:17[0m] shutdown
+[[38;5;246m09:12:47:023[0m] [[38;5;246mTRACE window.cpp - ~window:111[0m] shutdown
+[[38;5;246m09:12:47:024[0m] [[38;5;246mTRACE application.cpp - ~application:76[0m] shutdown

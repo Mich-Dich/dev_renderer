@@ -20,8 +20,10 @@ namespace GLT::render {
         f32 sleep_time = 0.f, work_time = 0.f;
         u32 material_binding_count = 0, pipline_binding_count = 0;
 
+        // f32 draw_geometry_time[200] = {};
         f32 renderer_draw_time[200] = {};
-        f32 draw_geometry_time[200] = {};
+        f32 geometry_pass_time[200] = {};
+        f32 lighting_pass_time[200] = {};
         f32 waiting_idle_time[200] = {};
         u16 current_index = 0;
 

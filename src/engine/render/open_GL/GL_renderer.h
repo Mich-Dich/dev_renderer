@@ -31,9 +31,14 @@ namespace GLT::render::open_GL {
         GLuint          m_vao{};
         GLuint          m_vbo{};
         glm::vec2       mouse_pos{};
-        GLuint          m_total_render_time{};
-        f32             m_total_time = 0.f;
+        f32             m_time_total = 0.f;
         
+    #ifdef DEBUG
+        GLuint  m_query_total;
+        GLuint  m_query_geometry;
+        GLuint  m_query_lighting;
+    #endif
+
         void create_shader_program();
         void create_fullscreen_quad();
         GLuint compile_shader(GLenum type, const char* source);

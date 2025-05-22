@@ -32,7 +32,6 @@ namespace GLT::factory::mesh {
 
         aiMesh* ai_mesh = scene->mMeshes[0]; // Only load the first mesh
 
-        out_mesh = std::make_shared<GLT::mesh::static_mesh>();
         out_mesh->vertices.reserve(ai_mesh->mNumVertices);
         for (unsigned int i = 0; i < ai_mesh->mNumVertices; ++i) {
 
