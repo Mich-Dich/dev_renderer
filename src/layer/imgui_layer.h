@@ -95,8 +95,8 @@ namespace GLT::UI {
 		bool										m_limit_fps = false;
 		bool										fonts_need_recreation = false;
 
-		UI::window_pos								renderer_metrik_window_location = static_cast<window_pos>(3);
-		UI::window_pos								FPS_window_location = static_cast<window_pos>(3);
+		UI::window_pos								renderer_metrik_window_location = static_cast<window_pos>(2);
+		UI::window_pos								FPS_window_location = static_cast<window_pos>(2);
 	};
 }
 

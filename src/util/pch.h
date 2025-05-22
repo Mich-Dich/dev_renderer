@@ -68,7 +68,6 @@
 #include <cstdlib>
 
 #include <regex>
-#include <cstdint>
 
 // glm math
 #define GLM_ENABLE_EXPERIMENTAL
@@ -77,7 +76,6 @@
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
 #include <glm/glm.hpp>
 #include <glm/gtc/random.hpp>
-#include <glm/gtc/type_ptr.hpp>
 #include <glm/vec3.hpp>
 #include <glm/vec4.hpp>
 #include <glm/mat4x4.hpp>

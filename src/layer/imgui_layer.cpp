@@ -163,6 +163,7 @@ namespace GLT::UI {
 	void imgui_layer::on_event(event& event) { }
 
 
+
 	void show_directory_tree(const std::filesystem::path& dir_path, const bool default_open, const std::function<void(const std::filesystem::path&)>& on_shader_select) {
 			
 		if (!std::filesystem::is_directory(dir_path)) {
@@ -210,14 +211,15 @@ namespace GLT::UI {
 		PROFILE_FUNCTION();
 		ImGui::SetCurrentContext(m_context);
 
-		// UI::set_next_window_pos(window_pos::top_left, 4.f);
-		// ImGui::SetNextWindowBgAlpha(0.5f);
-		// ImGui::Begin("Test", nullptr, ImGuiWindowFlags_AlwaysAutoResize); {
+		UI::set_next_window_pos(window_pos::top_left, 4.f);
+		ImGui::SetNextWindowBgAlpha(0.5f);
+		ImGui::Begin("Test", nullptr, ImGuiWindowFlags_AlwaysAutoResize); {
 
-		// 	std::filesystem::path base_path = GLT::util::get_executable_path() / std::filesystem::path("..") / "shaders";
-		// 	show_directory_tree(base_path, true, [this](const std::filesystem::path& shader_path) { application::get().get_renderer()->reload_fragment_shader(shader_path); });
+			std::filesystem::path base_path = GLT::util::get_executable_path() / std::filesystem::path("..") / "shaders";
 
-		// } ImGui::End();
+			show_directory_tree(base_path, true, [this](const std::filesystem::path& shader_path) { application::get().get_renderer()->reload_fragment_shader(shader_path); });
+
+		} ImGui::End();
 
 		show_renderer_metrik();
 	}
@@ -244,8 +246,8 @@ namespace GLT::UI {
 
 		// static char formatted_text[32];
 
-		UI::set_next_window_pos(renderer_metrik_window_location, 4.f);
-		ImGui::SetNextWindowBgAlpha(0.5f);
+		UI::set_next_window_pos(renderer_metrik_window_location);
+		ImGui::SetNextWindowBgAlpha(0.8f); // Transparent background
 		if (ImGui::Begin("Renderer Metrik##Engine", &m_show_FPS_window, window_flags)) {
 
 			auto* metrik = application::get().get_renderer()->get_general_performance_metrik_pointer();
@@ -265,16 +267,13 @@ namespace GLT::UI {
 				UI::shift_cursor_pos(0, 10);
 
 				static const auto renderer_draw_plot_col = ImVec4(0.f, 0.61f, 0.f, 1.00f);
-				static const auto geometry_pass_plot_col = ImVec4(0.f, 0.9f, 1.f, 1.00f);
-				static const auto lighting_pass_plot_col = ImVec4(0.f, 0.9f, 1.f, 1.00f);
+				static const auto draw_geometry_plot_col = ImVec4(0.f, 0.9f, 1.f, 1.00f);
 				static const auto waiting_idle_plot_col = ImVec4(0.9f, 0.f, 1.f, 1.00f);
 
 				// calc the maximum value but ensuring its atleast 1.f
-				const f32 plot_max_value = math::max(1.f,	math::max(math::calc_array_max(metrik->renderer_draw_time, 200),
-															math::max(math::calc_array_max(metrik->geometry_pass_time, 200),
-															math::max(math::calc_array_max(metrik->lighting_pass_time, 200),
-																math::calc_array_max(metrik->waiting_idle_time, 200)
-															))));
+				const f32 plot_max_value = math::max(1.f,	math::max(math::calc_array_max(metrik->renderer_draw_time, GENERAL_PERFORMANCE_METRIK_ARRAY_SIZE),
+															math::max(math::calc_array_max(metrik->draw_geometry_time, GENERAL_PERFORMANCE_METRIK_ARRAY_SIZE),
+																	math::calc_array_max(metrik->waiting_idle_time, GENERAL_PERFORMANCE_METRIK_ARRAY_SIZE))));
 
 				ImVec2 cursor_pos = ImGui::GetCursorPos();
 				ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
@@ -285,18 +284,13 @@ namespace GLT::UI {
 				ImGui::PopStyleColor();
 
 				ImGui::SetCursorPos(cursor_pos);
-				ImGui::PushStyleColor(ImGuiCol_PlotLines, geometry_pass_plot_col);
-				ImGui::PlotLines("##metrik_geometry_pass_time", metrik->geometry_pass_time, 200, metrik->current_index, (const char*)0, 0.0f, plot_max_value, ImVec2(280, 100));
-				ImGui::PopStyleColor();
-
-				ImGui::SetCursorPos(cursor_pos);
-				ImGui::PushStyleColor(ImGuiCol_PlotLines, lighting_pass_plot_col);
-				ImGui::PlotLines("##metrik_lighting_pass_time", metrik->lighting_pass_time, 200, metrik->current_index, (const char*)0, 0.0f, plot_max_value, ImVec2(280, 100));
+				ImGui::PushStyleColor(ImGuiCol_PlotLines, draw_geometry_plot_col);
+				ImGui::PlotLines("##metrik_draw_geometry_time", metrik->draw_geometry_time, 200, metrik->current_index, (const char*)0, 0.0f, plot_max_value, ImVec2(280, 100));
 				ImGui::PopStyleColor();
 
 				ImGui::SetCursorPos(cursor_pos);
 				ImGui::PushStyleColor(ImGuiCol_PlotLines, waiting_idle_plot_col);
-				ImGui::PlotLines("##metrik_waiting_idle_time", metrik->waiting_idle_time, 200, metrik->current_index, (const char*)0, 0.0f, plot_max_value, ImVec2(280, 100));
+				ImGui::PlotLines("##metrik_draw_geometry_time", metrik->waiting_idle_time, 200, metrik->current_index, (const char*)0, 0.0f, plot_max_value, ImVec2(280, 100));
 				ImGui::PopStyleColor();
 
 				ImGui::PopStyleColor();
@@ -308,54 +302,8 @@ namespace GLT::UI {
 				cursor_pos = ImGui::GetCursorPos();
 				static const u32 offset = static_cast<u32>(ImGui::GetTextLineHeight() / 2);
 
-	#if 0
-				// Plot Lines
-				constexpr const char* const fps_text = " 0 ms 1 ms 2 ms 3 ms 4 ms 5 ms 6 ms 7 ms 8 ms 9 ms10 ms11 ms12 ms13 ms14 ms15 ms16 ms17 ms18 ms19 ms20 ms21 ms22 ms23 ms24 ms25 ms26 ms27 ms28 ms29 ms30 ms31 ms32 ms33 ms34 ms35 ms36 ms37 ms38 ms39 ms40 ms41 ms42 ms43 ms44 ms45 ms46 ms47 ms48 ms49 ms50 ms51 ms52 ms53 ms54 ms55 ms56 ms57 ms58 ms59 ms60 ms61 ms62 ms63 ms64 ms65 ms66 ms67 ms68 ms69 ms70 ms71 ms72 ms73 ms74 ms75 ms76 ms77 ms78 ms79 ms80 ms81 ms82 ms83 ms84 ms85 ms86 ms87 ms88 ms89 ms90 ms91 ms92 ms93 ms94 ms95 ms96 ms97 ms98 ms99 ms";
-				ImDrawList* draw_list = ImGui::GetWindowDrawList();
-				ImVec2 plot_max_pos = { plot_pos.x + plot_size.x , plot_pos.y + plot_size.y };
-				static const u32 interval = (plot_max_value > 100) ? 10 : 1;
-				static const u32 text_size = 5;
-				static const u64 text_begin_offset = (plot_max_value > 100) ? text_size * 10 : 0;
-
-				u32 num_of_displayed_texts = 0;
-				u32 buffer = static_cast<u32>(plot_max_value / 8);
-				for (u32 x = 0; x < plot_max_value - 1; x += interval) {
-
-					if (x > (buffer) * num_of_displayed_texts) {
-
-						const char* text = fps_text + (math::min<u64>(98, x + text_begin_offset) * text_size);
-						f32 y = plot_max_pos.y - (x / plot_max_value * plot_size.y);
-						ImU32 color = (x % 5 == 0) ? IM_COL32(action_color_00_active.x * 255, action_color_00_active.y * 255, action_color_00_active.z * 255, 255) : IM_COL32(200, 200, 200, 180);
-
-						// f32 y_pos = plot_max_pos.y - (x / plot_max_value * plot_size.y);
-						draw_list->AddLine(ImVec2(plot_pos.x, y), ImVec2(plot_max_pos.x - 55, y), color);
-						draw_list->AddText(ImVec2(plot_max_pos.x - 50, y - offset), IM_COL32(200, 200, 200, 180), text, text + text_size);
-						draw_list->AddLine(ImVec2(plot_max_pos.x - 15, y), ImVec2(plot_max_pos.x, y), color);
-						num_of_displayed_texts++;
-					}
-				}
-	#else
-
-				// f32 get_adaptive_scale_step(f32 range) {
-
-				// 	if (range <= 0.0f)
-				// 		return 1.0f;
-					
-				// 	f32 log10_val = std::log10(range);
-				// 	f32 exponent = std::floor(log10_val);
-				// 	f32 fraction = log10_val - exponent;
-				// 	f32 scale_step = std::pow(10.0f, exponent);
-
-				// 	if (fraction > std::log10(5.0f))
-				// 		return scale_step * 5.0f;
-						
-				// 	if (fraction > std::log10(2.0f))
-				// 		return scale_step * 2.0f;
-						
-				// 	return scale_step;
-				// }
-
-				// Plot Lines
+	#if 1
+					// Plot Lines
 				ImDrawList* draw_list = ImGui::GetWindowDrawList();
 				ImVec2 plot_max_pos = { plot_pos.x + plot_size.x , plot_pos.y + plot_size.y };
 
@@ -393,17 +341,37 @@ namespace GLT::UI {
 					draw_list->AddText(ImVec2(plot_max_pos.x - 50 - text_size.x, y - y_tex_offset), IM_COL32(200, 200, 200, 255), label);
 					draw_list->AddLine(ImVec2(plot_max_pos.x - 15, y), ImVec2(plot_max_pos.x, y), color);
 				}
+	#else
+				// Plot Lines
+				static const char* const fps_text = " 0 ms 1 ms 2 ms 3 ms 4 ms 5 ms 6 ms 7 ms 8 ms 9 ms10 ms11 ms12 ms13 ms14 ms15 ms16 ms17 ms18 ms19 ms20 ms21 ms22 ms23 ms24 ms25 ms26 ms27 ms28 ms29 ms30 ms31 ms32 ms33 ms34 ms35 ms36 ms37 ms38 ms39 ms40 ms41 ms42 ms43 ms44 ms45 ms46 ms47 ms48 ms49 ms50 ms51 ms52 ms53 ms54 ms55 ms56 ms57 ms58 ms59 ms60 ms61 ms62 ms63 ms64 ms65 ms66 ms67 ms68 ms69 ms70 ms71 ms72 ms73 ms74 ms75 ms76 ms77 ms78 ms79 ms80 ms81 ms82 ms83 ms84 ms85 ms86 ms87 ms88 ms89 ms90 ms91 ms92 ms93 ms94 ms95 ms96 ms97 ms98 ms99 ms";
+				ImDrawList* draw_list = ImGui::GetWindowDrawList();
+				ImVec2 plot_max_pos = { plot_pos.x + plot_size.x , plot_pos.y + plot_size.y };
+				static const u32 interval = (plot_max_value > 100) ? 10 : 1;
+				static const u32 text_size = 5;
+				static const u64 text_begin_offset = (plot_max_value > 100) ? text_size * 10 : 0;
 
-				// if (plot_max_value > 0.0f) {
-				// 	f32 top_y = plot_max_pos.y - plot_size.y;
-				// 	draw_list->AddLine(ImVec2(plot_pos.x, top_y), ImVec2(plot_max_pos.x, top_y), IM_COL32(255, 255, 255, 255));
-				// }
+				u32 num_of_displayed_texts = 0;
+				u32 buffer = static_cast<u32>(plot_max_value / 8);
+				for (u32 x = 0; x < plot_max_value - 1; x += interval) {
+
+					if (x > (buffer) * num_of_displayed_texts) {
+
+						const char* text = fps_text + (math::min<u64>(98, x + text_begin_offset) * text_size);
+						float y = plot_max_pos.y - (x / plot_max_value * plot_size.y);
+						ImU32 color = (x % 5 == 0) ? IM_COL32(action_color_00_active.x * 255, action_color_00_active.y * 255, action_color_00_active.z * 255, 255) : IM_COL32(200, 200, 200, 180);
+
+						// f32 y_pos = plot_max_pos.y - (x / plot_max_value * plot_size.y);
+						draw_list->AddLine(ImVec2(plot_pos.x, y), ImVec2(plot_max_pos.x - 55, y), color);
+						draw_list->AddText(ImVec2(plot_max_pos.x - 50, y - offset), IM_COL32(200, 200, 200, 180), text, text + text_size);
+						draw_list->AddLine(ImVec2(plot_max_pos.x - 15, y), ImVec2(plot_max_pos.x, y), color);
+						num_of_displayed_texts++;
+					}
+				}
 	#endif
 
-				ImGui::TextColored(renderer_draw_plot_col, "render draw total %5.2f ms", metrik->renderer_draw_time[metrik->current_index]);
-				ImGui::TextColored(geometry_pass_plot_col, "geometry pass %5.2f ms", metrik->geometry_pass_time[metrik->current_index]);
-				ImGui::TextColored(lighting_pass_plot_col, "lighting pass %5.2f ms", metrik->lighting_pass_time[metrik->current_index]);
-				ImGui::TextColored(waiting_idle_plot_col, "waiting for GPU %5.2f ms", metrik->waiting_idle_time[metrik->current_index]);
+				ImGui::TextColored(renderer_draw_plot_col, "renderer draw %5.2f ms", metrik->renderer_draw_time[metrik->current_index]);
+				ImGui::TextColored(draw_geometry_plot_col, "draw geometry %5.2f ms", metrik->draw_geometry_time[metrik->current_index]);
+				ImGui::TextColored(waiting_idle_plot_col, "waiting idle %5.2f ms", metrik->waiting_idle_time[metrik->current_index]);
 			}
 
 			if (ImGui::BeginPopupContextWindow()) {
@@ -522,7 +490,7 @@ namespace GLT::UI {
 					if (i > (buffer) * num_of_displayed_texts) {
 
 						const char* text = fps_text + (math::min<u64>(98, i / static_cast<u64>(interval_thin)) * 3);
-						f32 y = plot_max_pos.y - (i / max_value * plot_size.y);
+						float y = plot_max_pos.y - (i / max_value * plot_size.y);
 						ImU32 color = (i % interval_thick == 0) ? IM_COL32(action_color_00_active.x * 255, action_color_00_active.y * 255, action_color_00_active.z * 255, 255) : IM_COL32(200, 200, 200, 180);
 
 						draw_list->AddLine(ImVec2(plot_pos.x, y), ImVec2(plot_max_pos.x - 55, y), color);
@@ -665,51 +633,51 @@ namespace GLT::UI {
 
 		/*
 		Alpha;                      // Global alpha applies to everything in Dear ImGui.
-		f32       DisabledAlpha;              // Additional alpha multiplier applied by BeginDisabled(). Multiply over current value of Alpha.
+		float       DisabledAlpha;              // Additional alpha multiplier applied by BeginDisabled(). Multiply over current value of Alpha.
 		ImVec2      WindowPadding;              // Padding within a window.
-		f32       WindowRounding;             // Radius of window corners rounding. Set to 0.0f to have rectangular windows. Large values tend to lead to variety of artifacts and are not recommended.
-		f32       WindowBorderSize;           // Thickness of border around windows. Generally set to 0.0f or 1.0f. (Other values are not well tested and more CPU/GPU costly).
+		float       WindowRounding;             // Radius of window corners rounding. Set to 0.0f to have rectangular windows. Large values tend to lead to variety of artifacts and are not recommended.
+		float       WindowBorderSize;           // Thickness of border around windows. Generally set to 0.0f or 1.0f. (Other values are not well tested and more CPU/GPU costly).
 		ImVec2      WindowMinSize;              // Minimum window size. This is a global setting. If you want to constrain individual windows, use SetNextWindowSizeConstraints().
 		ImVec2      WindowTitleAlign;           // Alignment for title bar text. Defaults to (0.0f,0.5f) for left-aligned,vertically centered.
 		ImGuiDir    WindowMenuButtonPosition;   // Side of the collapsing/docking button in the title bar (None/Left/Right). Defaults to ImGuiDir_Left.
-		f32       ChildRounding;              // Radius of child window corners rounding. Set to 0.0f to have rectangular windows.
-		f32       ChildBorderSize;            // Thickness of border around child windows. Generally set to 0.0f or 1.0f. (Other values are not well tested and more CPU/GPU costly).
-		f32       PopupRounding;              // Radius of popup window corners rounding. (Note that tooltip windows use WindowRounding)
-		f32       PopupBorderSize;            // Thickness of border around popup/tooltip windows. Generally set to 0.0f or 1.0f. (Other values are not well tested and more CPU/GPU costly).
+		float       ChildRounding;              // Radius of child window corners rounding. Set to 0.0f to have rectangular windows.
+		float       ChildBorderSize;            // Thickness of border around child windows. Generally set to 0.0f or 1.0f. (Other values are not well tested and more CPU/GPU costly).
+		float       PopupRounding;              // Radius of popup window corners rounding. (Note that tooltip windows use WindowRounding)
+		float       PopupBorderSize;            // Thickness of border around popup/tooltip windows. Generally set to 0.0f or 1.0f. (Other values are not well tested and more CPU/GPU costly).
 		ImVec2      FramePadding;               // Padding within a framed rectangle (used by most widgets).
-		f32       FrameRounding;              // Radius of frame corners rounding. Set to 0.0f to have rectangular frame (used by most widgets).
-		f32       FrameBorderSize;            // Thickness of border around frames. Generally set to 0.0f or 1.0f. (Other values are not well tested and more CPU/GPU costly).
+		float       FrameRounding;              // Radius of frame corners rounding. Set to 0.0f to have rectangular frame (used by most widgets).
+		float       FrameBorderSize;            // Thickness of border around frames. Generally set to 0.0f or 1.0f. (Other values are not well tested and more CPU/GPU costly).
 		ImVec2      ItemSpacing;                // Horizontal and vertical spacing between widgets/lines.
 		ImVec2      ItemInnerSpacing;           // Horizontal and vertical spacing between within elements of a composed widget (e.g. a slider and its label).
 		ImVec2      CellPadding;                // Padding within a table cell. Cellpadding.x is locked for entire table. CellPadding.y may be altered between different rows.
 		ImVec2      TouchExtraPadding;          // Expand reactive bounding box for touch-based system where touch position is not accurate enough. Unfortunately we don't sort widgets so priority on overlap will always be given to the first widget. So don't grow this too much!
-		f32       IndentSpacing;              // Horizontal indentation when e.g. entering a tree node. Generally == (FontSize + FramePadding.x*2).
-		f32       ColumnsMinSpacing;          // Minimum horizontal spacing between two columns. Preferably > (FramePadding.x + 1).
-		f32       ScrollbarSize;              // Width of the vertical scrollbar, Height of the horizontal scrollbar.
-		f32       ScrollbarRounding;          // Radius of grab corners for scrollbar.
-		f32       GrabMinSize;                // Minimum width/height of a grab box for slider/scrollbar.
-		f32       GrabRounding;               // Radius of grabs corners rounding. Set to 0.0f to have rectangular slider grabs.
-		f32       LogSliderDeadzone;          // The size in pixels of the dead-zone around zero on logarithmic sliders that cross zero.
-		f32       TabRounding;                // Radius of upper corners of a tab. Set to 0.0f to have rectangular tabs.
-		f32       TabBorderSize;              // Thickness of border around tabs.
-		f32       TabMinWidthForCloseButton;  // Minimum width for close button to appear on an unselected tab when hovered. Set to 0.0f to always show when hovering, set to FLT_MAX to never show close button unless selected.
-		f32       TabBarBorderSize;           // Thickness of tab-bar separator, which takes on the tab active color to denote focus.
-		f32       TableAngledHeadersAngle;    // Angle of angled headers (supported values range from -50.0f degrees to +50.0f degrees).
+		float       IndentSpacing;              // Horizontal indentation when e.g. entering a tree node. Generally == (FontSize + FramePadding.x*2).
+		float       ColumnsMinSpacing;          // Minimum horizontal spacing between two columns. Preferably > (FramePadding.x + 1).
+		float       ScrollbarSize;              // Width of the vertical scrollbar, Height of the horizontal scrollbar.
+		float       ScrollbarRounding;          // Radius of grab corners for scrollbar.
+		float       GrabMinSize;                // Minimum width/height of a grab box for slider/scrollbar.
+		float       GrabRounding;               // Radius of grabs corners rounding. Set to 0.0f to have rectangular slider grabs.
+		float       LogSliderDeadzone;          // The size in pixels of the dead-zone around zero on logarithmic sliders that cross zero.
+		float       TabRounding;                // Radius of upper corners of a tab. Set to 0.0f to have rectangular tabs.
+		float       TabBorderSize;              // Thickness of border around tabs.
+		float       TabMinWidthForCloseButton;  // Minimum width for close button to appear on an unselected tab when hovered. Set to 0.0f to always show when hovering, set to FLT_MAX to never show close button unless selected.
+		float       TabBarBorderSize;           // Thickness of tab-bar separator, which takes on the tab active color to denote focus.
+		float       TableAngledHeadersAngle;    // Angle of angled headers (supported values range from -50.0f degrees to +50.0f degrees).
 		ImGuiDir    ColorButtonPosition;        // Side of the color button in the ColorEdit4 widget (left/right). Defaults to ImGuiDir_Right.
 		ImVec2      ButtonTextAlign;            // Alignment of button text when button is larger than text. Defaults to (0.5f, 0.5f) (centered).
 		ImVec2      SelectableTextAlign;        // Alignment of selectable text. Defaults to (0.0f, 0.0f) (top-left aligned). It's generally important to keep this left-aligned if you want to lay multiple items on a same line.
-		f32       SeparatorTextBorderSize;    // Thickkness of border in SeparatorText()
+		float       SeparatorTextBorderSize;    // Thickkness of border in SeparatorText()
 		ImVec2      SeparatorTextAlign;         // Alignment of text within the separator. Defaults to (0.0f, 0.5f) (left aligned, center).
 		ImVec2      SeparatorTextPadding;       // Horizontal offset of text from each edge of the separator + spacing on other axis. Generally small values. .y is recommended to be == FramePadding.y.
 		ImVec2      DisplayWindowPadding;       // Window position are clamped to be visible within the display area or monitors by at least this amount. Only applies to regular windows.
 		ImVec2      DisplaySafeAreaPadding;     // If you cannot see the edges of your screen (e.g. on a TV) increase the safe area padding. Apply to popups/tooltips as well regular windows. NB: Prefer configuring your TV sets correctly!
-		f32       DockingSeparatorSize;       // Thickness of resizing border between docked windows
-		f32       MouseCursorScale;           // Scale software rendered mouse cursor (when io.MouseDrawCursor is enabled). We apply per-monitor DPI scaling over this scale. May be removed later.
+		float       DockingSeparatorSize;       // Thickness of resizing border between docked windows
+		float       MouseCursorScale;           // Scale software rendered mouse cursor (when io.MouseDrawCursor is enabled). We apply per-monitor DPI scaling over this scale. May be removed later.
 		bool        AntiAliasedLines;           // Enable anti-aliased lines/borders. Disable if you are really tight on CPU/GPU. Latched at the beginning of the frame (copied to ImDrawList).
 		bool        AntiAliasedLinesUseTex;     // Enable anti-aliased lines/borders using textures where possible. Require backend to render with bilinear filtering (NOT point/nearest filtering). Latched at the beginning of the frame (copied to ImDrawList).
 		bool        AntiAliasedFill;            // Enable anti-aliased edges around filled shapes (rounded rectangles, circles, etc.). Disable if you are really tight on CPU/GPU. Latched at the beginning of the frame (copied to ImDrawList).
-		f32       CurveTessellationTol;       // Tessellation tolerance when using PathBezierCurveTo() without a specific number of segments. Decrease for highly tessellated curves (higher quality, more polygons), increase to reduce quality.
-		f32       CircleTessellationMaxError; // Maximum error (in pixels) allowed when using AddCircle()/AddCircleFilled() or drawing rounded corner rectangles with no explicit segment count specified. Decrease for higher quality but more geometry.
+		float       CurveTessellationTol;       // Tessellation tolerance when using PathBezierCurveTo() without a specific number of segments. Decrease for highly tessellated curves (higher quality, more polygons), increase to reduce quality.
+		float       CircleTessellationMaxError; // Maximum error (in pixels) allowed when using AddCircle()/AddCircleFilled() or drawing rounded corner rectangles with no explicit segment count specified. Decrease for higher quality but more geometry.
 		*/
 		
 		switch (UI_theme) {

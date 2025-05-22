@@ -1,15 +1,15 @@
 
 #pragma once
 
+#include "engine/platform/window.h"
 #include "engine/render/buffer.h"
-#include "engine/render/g_buffer.h"
-
 
 namespace GLT {
     class layer_stack;
     class window;
 }
-namespace GLT::mesh { class static_mesh; }
+namespace GLT::geometry { class static_mesh; }
+
 
 namespace GLT::render {
 
@@ -20,17 +20,16 @@ namespace GLT::render {
         f32 sleep_time = 0.f, work_time = 0.f;
         u32 material_binding_count = 0, pipline_binding_count = 0;
 
-        // f32 draw_geometry_time[200] = {};
-        f32 renderer_draw_time[200] = {};
-        f32 geometry_pass_time[200] = {};
-        f32 lighting_pass_time[200] = {};
-        f32 waiting_idle_time[200] = {};
+        #define GENERAL_PERFORMANCE_METRIK_ARRAY_SIZE       200
+        f32 renderer_draw_time[GENERAL_PERFORMANCE_METRIK_ARRAY_SIZE] = {};
+        f32 draw_geometry_time[GENERAL_PERFORMANCE_METRIK_ARRAY_SIZE] = {};
+        f32 waiting_idle_time[GENERAL_PERFORMANCE_METRIK_ARRAY_SIZE] = {};
         u16 current_index = 0;
 
         void next_iteration() {
 
             current_index = (current_index + 1) % 200;
-
+            // renderer_draw_time[current_index] = draw_geometry_time[current_index] = waiting_idle_time[current_index] = 0.f;
             material_binding_count = pipline_binding_count = draw_calls = mesh_draw = 0;
             triangles = 0;
             sleep_time = work_time = 0.f;
@@ -49,28 +48,25 @@ namespace GLT::render {
         virtual void draw_frame(float delta_time) = 0;
         virtual void set_size(const u32 width, const u32 height) = 0;
 
+        virtual void upload_mesh(ref<GLT::geometry::static_mesh> mesh) = 0;
+        virtual void reload_fragment_shader(const std::filesystem::path& frag_file) = 0;
+        virtual void prepare_mesh(ref<GLT::geometry::static_mesh> mesh) = 0;
+
         // -------- ImGui --------
         virtual void imgui_init() = 0;
         virtual void imgui_shutdown() = 0;
         virtual void imgui_create_fonts() = 0;
-
-        virtual void reload_fragment_shader(const std::filesystem::path& frag_file) = 0;
-        virtual void upload_mesh(ref<GLT::mesh::static_mesh> mesh) = 0;
 
         // -------- fixed for all sub-classes --------
         void set_state(system_state new_state) { m_system_state = new_state;}
 
     protected:
 
-        ref<GLT::window>                m_window;
-        ref<GLT::layer_stack>           m_layer_stack;
-        system_state                    m_system_state = system_state::inactive;
-        general_performance_metrik      m_general_performance_metrik{};
-        g_buffer                        m_gbuffer;
-        u32                             m_geometry_shader;
-        u32                             m_lighting_shader{};
-
-
+        ref<GLT::window>                    m_window;
+        ref<GLT::layer_stack>               m_layer_stack;
+        system_state                        m_system_state = system_state::inactive;
+        general_performance_metrik          m_general_performance_metrik{};
+        
     };
 
 }

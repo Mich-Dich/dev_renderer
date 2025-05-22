@@ -5,6 +5,7 @@
 #include <imgui.h>
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
+#include <meshoptimizer.h>
 
 #include "util/util.h"
 #include "application.h"
@@ -12,18 +13,10 @@
 #include "layer/layer_stack.h"
 #include "layer/imgui_layer.h"
 #include "layer/world_layer.h"
-#include "world/static_mesh.h"
+#include "geometry/static_mesh.h"
 #include "engine/platform/window.h"
 
 #include "GL_renderer.h"
-
-#ifdef DEBUG
-    #define END_TIMER               glEndQuery(GL_TIME_ELAPSED);
-    #define START_TIMER(variable)   glBeginQuery(GL_TIME_ELAPSED, variable);
-#else
-    #define END_TIMER
-    #define START_TIMER(variable)
-#endif
 
 
 namespace GLT::render::open_GL {
@@ -46,10 +39,7 @@ namespace GLT::render::open_GL {
     
         create_shader_program();
         create_fullscreen_quad();
-
-        m_gbuffer.create(window->get_width(), window->get_height());
-        create_geometry_shader();
-
+        
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     
@@ -58,13 +48,8 @@ namespace GLT::render::open_GL {
         glCullFace(GL_BACK);
 
 #ifdef DEBUG
-        GLuint queries[3];
-        glGenQueries(3, queries);
-        m_query_total     = queries[0];
-        m_query_geometry  = queries[1];
-        m_query_lighting  = queries[2];
+        glGenQueries(1, &m_total_render_time);
 #endif
-
     }
     
     GL_renderer::~GL_renderer() {
@@ -73,6 +58,70 @@ namespace GLT::render::open_GL {
     
 
 
+
+    void GL_renderer::draw_frame(float delta_time) {
+    
+#ifdef DEBUG
+		m_general_performance_metrik.next_iteration();
+        glBeginQuery(GL_TIME_ELAPSED, m_total_render_time);
+#endif
+
+        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    
+        ref<GLT::geometry::static_mesh> mesh = application::get().get_world_layer()->GET_RENDER_MESH();
+        glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, mesh->vertex_ssbo);
+        glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, mesh->index_ssbo);
+
+        glUseProgram(m_shader_program);
+    
+        // Set uniforms
+        GLint loc_resolution = glGetUniformLocation(m_shader_program, "u_resolution");
+        GLint loc_mouse = glGetUniformLocation(m_shader_program, "u_mouse");
+        GLint loc_time = glGetUniformLocation(m_shader_program, "u_time");
+    
+        const int width = m_window->get_width();
+        const int height = m_window->get_height();
+        glUniform2f(loc_resolution, (float)width, (float)height);
+    
+        m_window->get_mouse_position(mouse_pos);
+        glUniform2f(loc_mouse, mouse_pos.x, (height - mouse_pos.y)); // Flip Y
+    
+        static float totalTime = 0.0f;
+        totalTime += delta_time;
+        glUniform1f(loc_time, totalTime);
+    
+        // Draw fullscreen quad
+        glBindVertexArray(m_vao);
+        glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+        glBindVertexArray(0);
+    
+        // start new ImGui frame
+        ImGui_ImplOpenGL3_NewFrame();
+        ImGui_ImplGlfw_NewFrame();
+        ImGui::NewFrame();
+
+        for (layer* layer : *renderer::m_layer_stack) 
+            layer->on_imgui_render();
+
+        ImGui::Render();
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+        // Swap buffers
+        glfwSwapBuffers(m_window->get_window());
+
+#ifdef DEBUG
+        glEndQuery(GL_TIME_ELAPSED);
+        GLint available = 0;
+        while (!available)
+            glGetQueryObjectiv(m_total_render_time, GL_QUERY_RESULT_AVAILABLE, &available);
+
+        GLuint64 elapsed_time;
+        glGetQueryObjectui64v(m_total_render_time, GL_QUERY_RESULT, &elapsed_time);
+        m_general_performance_metrik.renderer_draw_time[m_general_performance_metrik.current_index] = elapsed_time / 1e6f;
+#endif
+    }
+    
 
     GLuint GL_renderer::compile_shader(GLenum type, const char* source) {
 
@@ -89,140 +138,27 @@ namespace GLT::render::open_GL {
         }
         return shader;
     }
-    
-    
-    void GL_renderer::draw_frame(f32 delta_time) {
-    
-#ifdef DEBUG
-		m_general_performance_metrik.next_iteration();
-        START_TIMER(m_query_total);
-#endif
-
-        // ----------------------------------------------------------
-        // Geometry Pass: Render scene to G-buffer
-        // ----------------------------------------------------------
-        START_TIMER(m_query_geometry);
-
-        glBindFramebuffer(GL_FRAMEBUFFER, m_gbuffer.FBO);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        glUseProgram(m_geometry_shader);
-
-        // Update matrices
-        m_viewMatrix = glm::lookAt(m_cameraPos, m_cameraPos + m_cameraFront, m_cameraUp);
-        glUniformMatrix4fv(m_geometry_shader_view_loc, 1, GL_FALSE, glm::value_ptr(m_viewMatrix));
-
-        // Draw mesh
-        ref<GLT::mesh::static_mesh> mesh = application::get().get_world_layer()->GET_RENDER_MESH();
-        glBindVertexArray(mesh->vao);
-        glUniformMatrix4fv(m_geometry_shader_model_loc, 1, GL_FALSE, glm::value_ptr(mesh->transform));
-        glDrawElements(GL_TRIANGLES, mesh->indices.size(), GL_UNSIGNED_INT, 0);
-
-        END_TIMER; // ends m_query_geometry
-
-        // ----------------------------------------------------------
-        // Lighting Pass: Render fullscreen quad with lighting calculation
-        // ----------------------------------------------------------
-        START_TIMER(m_query_lighting);
-
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
-        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         
-        glUseProgram(m_lighting_shader);
 
-        glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, mesh->vertex_ssbo);
-        glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, mesh->index_ssbo);
-        glUniform1ui(glGetUniformLocation(m_lighting_shader, "numIndices"), mesh->indices.size());
-        LOG(Trace, "Binding mesh indecies: " << mesh->indices.size() << " vertex SSBO: " << mesh->vertex_ssbo << " index SSBO: " << mesh->index_ssbo)
-
-        // Camera setup
-        glm::mat4 projection = glm::perspective(
-            glm::radians(45.0f),
-            static_cast<f32>(m_window->get_width()) / m_window->get_height(),
-            0.01f, 1000.0f
-        );
-        glm::mat4 view = glm::lookAt(m_cameraPos, m_cameraPos + m_cameraFront, m_cameraUp);
-        glm::mat4 invProjection = glm::inverse(projection);
-        glm::mat4 invView = glm::inverse(view);
-
-        glUniform3fv(glGetUniformLocation(m_lighting_shader, "cameraPos"), 1, glm::value_ptr(m_cameraPos));
-        glUniformMatrix4fv(glGetUniformLocation(m_lighting_shader, "invProjection"), 1, GL_FALSE, glm::value_ptr(invProjection));
-        glUniformMatrix4fv(glGetUniformLocation(m_lighting_shader, "invView"), 1, GL_FALSE, glm::value_ptr(invView));
-        glUniformMatrix4fv(glGetUniformLocation(m_lighting_shader, "model"), 1, GL_FALSE, glm::value_ptr(mesh->transform));
-        glUniform2fv(glGetUniformLocation(m_lighting_shader, "screenSize"), 1, glm::value_ptr(glm::vec2(m_window->get_width(), m_window->get_height())));
-
-        // Draw fullscreen quad
-        glBindVertexArray(m_vao);
-        glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-        glBindVertexArray(0);
-
-        END_TIMER; // ends m_query_lighting
-
-        // ----------------------------------------------------------
-        // Render UI
-        // ----------------------------------------------------------
-        ImGui_ImplOpenGL3_NewFrame();
-        ImGui_ImplGlfw_NewFrame();
-        ImGui::NewFrame();
-
-        for (layer* layer : *renderer::m_layer_stack) 
-            layer->on_imgui_render();
-
-        ImGui::Render();
-        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
-        // Swap buffers
-        glfwSwapBuffers(m_window->get_window());        // TODO: move to window and make renderer a friend
-        glfwSwapBuffers(m_window->get_window());
-
-#ifdef DEBUG
-        END_TIMER; // ends m_query_total
-
-        // Wait for all three results to become available
-        GLuint available = 0;
-        while (!available) {
-            glGetQueryObjectiv(m_query_total, GL_QUERY_RESULT_AVAILABLE, (GLint*)&available);
-        }
-
-        GLuint64 time_total, time_geom, time_light;
-        glGetQueryObjectui64v(m_query_total,    GL_QUERY_RESULT, &time_total);
-        glGetQueryObjectui64v(m_query_geometry, GL_QUERY_RESULT, &time_geom);
-        glGetQueryObjectui64v(m_query_lighting, GL_QUERY_RESULT, &time_light);
-
-        // Convert from nanoseconds to milliseconds:
-        m_general_performance_metrik.renderer_draw_time[m_general_performance_metrik.current_index]     = time_total  / 1e6;
-        m_general_performance_metrik.geometry_pass_time[m_general_performance_metrik.current_index]     = time_geom   / 1e6;
-        m_general_performance_metrik.lighting_pass_time[m_general_performance_metrik.current_index]     = time_light  / 1e6;
-#endif
-    }
+    void GL_renderer::set_size(const u32 width, const u32 height) { glViewport(0, 0, width, height); }
     
-
-    void GL_renderer::set_size(const u32 width, const u32 height) {
-
-        m_gbuffer.resize(width, height);
-        glViewport(0, 0, width, height);
-        
-        // Update projection matrix
-        glUseProgram(m_geometry_shader);
-        glm::mat4 projection = glm::perspective(
-            glm::radians(45.0f),
-            static_cast<f32>(width) / height,
-            0.1f, 100.0f
-        );
-        glUniformMatrix4fv(m_geometry_shader_proj_loc, 1, GL_FALSE, glm::value_ptr(projection));
-        glUseProgram(0);
-    }
-
 
     void GL_renderer::reload_fragment_shader(const std::filesystem::path& frag_file) {
 
+        // Read new fragment shader source
         std::string frag_src = io::read_file(frag_file.string());
-        VALIDATE(!frag_src.empty(), return, "", "Failed to read frag shader: " << frag_file)
+        if (frag_src.empty()) {
+            LOG(Error, "Failed to read frag shader: " << frag_file);
+            return;
+        }
 
         // --- Recreate shader program from scratch to avoid duplicate definitions ---
         // Read vertex shader again (to use same entry point)
         std::string vert_src = io::read_file("shaders/fullscreen_quad.vert");
-        VALIDATE(!vert_src.empty(), return, "", "Failed to re-read vert shader")
+        if (vert_src.empty()) {
+            LOG(Error, "Failed to re-read vert shader");
+            return;
+        }
 
         GLuint vertShader = compile_shader(GL_VERTEX_SHADER, vert_src.c_str());
         GLuint fragShader = compile_shader(GL_FRAGMENT_SHADER, frag_src.c_str());
@@ -232,14 +168,13 @@ namespace GLT::render::open_GL {
         glAttachShader(newProgram, fragShader);
         glLinkProgram(newProgram);
 
+        // Check link status
         GLint success;
         glGetProgramiv(newProgram, GL_LINK_STATUS, &success);
         if (!success) {
-
             char infoLog[512];
             glGetProgramInfoLog(newProgram, 512, nullptr, infoLog);
             LOG(Error, "Shader relink failed: " << infoLog);
-            
             // Cleanup
             glDeleteShader(vertShader);
             glDeleteShader(fragShader);
@@ -247,67 +182,85 @@ namespace GLT::render::open_GL {
             return;
         }
 
-        glDeleteProgram(m_lighting_shader);
-        m_lighting_shader = newProgram;
+        // If successful, swap programs
+        glDeleteProgram(m_shader_program);
+        m_shader_program = newProgram;
 
+        // Cleanup shaders (they can be deleted after linking)
         glDeleteShader(vertShader);
         glDeleteShader(fragShader);
 
         LOG(Info, "Shader program reloaded from " << frag_file);
-        m_time_total = 0.f;
     }
 
 
-    void GL_renderer::create_geometry_shader() {
-        
-        // Vertex shader source
-    	const auto vert_source = io::read_file(GLT::util::get_executable_path().parent_path() / "shaders" / "geometry_pass.vert");
-        GLuint vertShader = compile_shader(GL_VERTEX_SHADER, vert_source.data());
+    void GL_renderer::prepare_mesh(ref<GLT::geometry::static_mesh> mesh) {
 
-        const auto frag_source = io::read_file(GLT::util::get_executable_path().parent_path() / "shaders" / "geometry_pass.frag");
-        GLuint fragShader = compile_shader(GL_FRAGMENT_SHADER, frag_source.data());
-
-        // Create and link program
-        m_geometry_shader = glCreateProgram();
-        glAttachShader(m_geometry_shader, vertShader);
-        glAttachShader(m_geometry_shader, fragShader);
-        glLinkProgram(m_geometry_shader);
-
-        // Check linking errors
-        GLint success;
-        glGetProgramiv(m_geometry_shader, GL_LINK_STATUS, &success);
-        if (!success) {
-            char infoLog[512];
-            glGetProgramInfoLog(m_geometry_shader, 512, nullptr, infoLog);
-            LOG(Error, "Geometry shader linking failed: " << infoLog);
-        }
-
-        // Cleanup shaders
-        glDeleteShader(vertShader);
-        glDeleteShader(fragShader);
-
-        // Get uniform locations
-        m_geometry_shader_model_loc = glGetUniformLocation(m_geometry_shader, "model");
-        m_geometry_shader_view_loc = glGetUniformLocation(m_geometry_shader, "view");
-        m_geometry_shader_proj_loc = glGetUniformLocation(m_geometry_shader, "projection");
-
-        // Set static projection matrix (update on window resize)
-        glUseProgram(m_geometry_shader);
-        glm::mat4 projection = glm::perspective(
-            glm::radians(45.0f), 
-            static_cast<f32>(m_window->get_width()) / m_window->get_height(),
-            0.1f, 100.0f
+        // 1. Generate vertex remap
+        std::vector<unsigned int> remap(mesh->vertices.size());
+        size_t vertex_count = meshopt_generateVertexRemap(
+            remap.data(),
+            mesh->indices.data(),
+            mesh->indices.size(),
+            mesh->vertices.data(),
+            mesh->vertices.size(),
+            sizeof(GLT::geometry::vertex)
         );
-        glUniformMatrix4fv(m_geometry_shader_proj_loc, 1, GL_FALSE, glm::value_ptr(projection));
-        glUseProgram(0);
+
+        // 2. Allocate remapped data
+        std::vector<GLT::geometry::vertex> vertices(vertex_count);
+        std::vector<unsigned int> indices(mesh->indices.size());
+        
+        // 3. Remap indices and vertices
+        meshopt_remapIndexBuffer(indices.data(), mesh->indices.data(), mesh->indices.size(), remap.data());
+        meshopt_remapVertexBuffer(
+            vertices.data(),
+            mesh->vertices.data(),
+            mesh->vertices.size(),
+            sizeof(GLT::geometry::vertex),
+            remap.data()
+        );
+
+        // 4. Optimize vertex cache
+        meshopt_optimizeVertexCache(indices.data(), indices.data(), indices.size(), vertices.size());
+
+        // 5. Optimize overdraw
+        meshopt_optimizeOverdraw(
+            indices.data(), 
+            indices.data(), 
+            indices.size(),
+            &vertices[0].position.x,
+            vertices.size(),
+            sizeof(GLT::geometry::vertex),
+            1.05f
+        );
+
+        // 6. Optimize vertex fetch
+        meshopt_optimizeVertexFetch(
+            vertices.data(),
+            indices.data(),
+            indices.size(),
+            vertices.data(),
+            vertices.size(),
+            sizeof(GLT::geometry::vertex)
+        );
+
+        // Replace with optimized data
+        mesh->vertices = std::move(vertices);
+        mesh->indices = std::move(indices);
     }
 
 
-    void GL_renderer::upload_mesh(ref<GLT::mesh::static_mesh> mesh) {
+    void GL_renderer::upload_mesh(ref<GLT::geometry::static_mesh> mesh) {
+
+        prepare_mesh(mesh);
+
+        mesh->vertex_buffer.create(mesh->vertices.data(), mesh->vertices.size() * sizeof(GLT::geometry::vertex));
+        mesh->index_buffer.create(mesh->indices.data(), mesh->indices.size() * sizeof(u32));
 
         // Create buffers if they don't exist
         if(mesh->vertex_buffer.get_ID() == 0)
-            mesh->vertex_buffer.create(mesh->vertices.data(), mesh->vertices.size() * sizeof(GLT::mesh::vertex));
+            mesh->vertex_buffer.create(mesh->vertices.data(), mesh->vertices.size() * sizeof(GLT::geometry::vertex));
         
         if(mesh->index_buffer.get_ID() == 0)
             mesh->index_buffer.create(mesh->indices.data(), mesh->indices.size() * sizeof(u32));
@@ -324,19 +277,24 @@ namespace GLT::render::open_GL {
 
         // Vertex attributes
         glEnableVertexAttribArray(0);
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(GLT::mesh::vertex), (void*)offsetof(GLT::mesh::vertex, position));
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(GLT::geometry::vertex), (void*)offsetof(GLT::geometry::vertex, position));
         
+        // Normal attribute - now at offset 16 (position(12) + uv_x(4))
         glEnableVertexAttribArray(1);
-        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(GLT::mesh::vertex), (void*)offsetof(GLT::mesh::vertex, normal));
+        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(GLT::geometry::vertex), (void*)offsetof(GLT::geometry::vertex, normal));
         
+        // UV attributes - split into two separate floats
         glEnableVertexAttribArray(2);
-        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(GLT::mesh::vertex), (void*)offsetof(GLT::mesh::vertex, texcoord));
+        glVertexAttribPointer(2, 1, GL_FLOAT, GL_FALSE, sizeof(GLT::geometry::vertex), (void*)offsetof(GLT::geometry::vertex, uv_x));
+        
+        glEnableVertexAttribArray(3);
+        glVertexAttribPointer(3, 1, GL_FLOAT, GL_FALSE, sizeof(GLT::geometry::vertex), (void*)offsetof(GLT::geometry::vertex, uv_y));
 
         // Create SSBOs for ray tracing
         if (mesh->vertex_ssbo == 0) {
             glGenBuffers(1, &mesh->vertex_ssbo);
             glBindBuffer(GL_SHADER_STORAGE_BUFFER, mesh->vertex_ssbo);
-            glBufferData(GL_SHADER_STORAGE_BUFFER, mesh->vertices.size() * sizeof(GLT::mesh::vertex), mesh->vertices.data(), GL_STATIC_DRAW);
+            glBufferData(GL_SHADER_STORAGE_BUFFER, mesh->vertices.size() * sizeof(GLT::geometry::vertex), mesh->vertices.data(), GL_STATIC_DRAW);
         }
 
         if (mesh->index_ssbo == 0) {
@@ -375,42 +333,36 @@ namespace GLT::render::open_GL {
 
     void GL_renderer::create_shader_program() {
     
-        std::string vert_source = io::read_file("shaders/fullscreen_quad.vert");
-        ASSERT(!vert_source.empty(), "", "Failed to read vert shader");
+        std::string vert_content = io::read_file("shaders/fullscreen_quad.vert");
+        ASSERT(!vert_content.empty(), "", "Failed to read vert shader");
     
-        std::string frag_source = io::read_file("shaders/lighting_pass.frag");
-        ASSERT(!frag_source.empty(), "", "Failed to read frag shader");
+        std::string frag_content = io::read_file("shaders/ray_tracer_intor.frag");
+        ASSERT(!frag_content.empty(), "", "Failed to read frag shader");
     
-        GLuint vert_shader = compile_shader(GL_VERTEX_SHADER, vert_source.data());
-        GLuint frag_shader = compile_shader(GL_FRAGMENT_SHADER, frag_source.data());
+        GLuint vertexShader = compile_shader(GL_VERTEX_SHADER, vert_content.data());
+        GLuint fragmentShader = compile_shader(GL_FRAGMENT_SHADER, frag_content.data());
     
-        m_lighting_shader = glCreateProgram();
-        glAttachShader(m_lighting_shader, vert_shader);
-        glAttachShader(m_lighting_shader, frag_shader);
-        glLinkProgram(m_lighting_shader);
-        
-        glUseProgram(m_lighting_shader);
-        glUniform1i(glGetUniformLocation(m_lighting_shader, "gPosition"), 0);
-        glUniform1i(glGetUniformLocation(m_lighting_shader, "gNormal"), 1);
-        glUniform1i(glGetUniformLocation(m_lighting_shader, "gAlbedoSpec"), 2);
-        glUseProgram(0);
-        
+        m_shader_program = glCreateProgram();
+        glAttachShader(m_shader_program, vertexShader);
+        glAttachShader(m_shader_program, fragmentShader);
+        glLinkProgram(m_shader_program);
+    
         GLint success;
-        glGetProgramiv(m_lighting_shader, GL_LINK_STATUS, &success);
+        glGetProgramiv(m_shader_program, GL_LINK_STATUS, &success);
         if(!success) {
             char infoLog[512];
-            glGetProgramInfoLog(m_lighting_shader, 512, nullptr, infoLog);
+            glGetProgramInfoLog(m_shader_program, 512, nullptr, infoLog);
             LOG(Error, "Shader program linking failed: " << infoLog);
         }
     
-        glDeleteShader(vert_shader);
-        glDeleteShader(frag_shader);
+        glDeleteShader(vertexShader);
+        glDeleteShader(fragmentShader);
     }
     
 
     void GL_renderer::create_fullscreen_quad() {
         
-        f32 vertices[] = {
+        float vertices[] = {
             // positions   // texCoords
             -1.0,  1.0,    0.0, 1.0,
             -1.0, -1.0,    0.0, 0.0,
@@ -426,11 +378,11 @@ namespace GLT::render::open_GL {
         glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
     
         // Position attribute
-        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(f32), (void*)0);
+        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
         glEnableVertexAttribArray(0);
     
         // Texture coordinate attribute
-        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(f32), (void*)(2 * sizeof(f32)));
+        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
         glEnableVertexAttribArray(1);
     
         glBindBuffer(GL_ARRAY_BUFFER, 0);

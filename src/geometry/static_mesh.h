@@ -3,13 +3,14 @@
 #include "engine/render/buffer.h"
 
 
-namespace GLT::mesh {
+namespace GLT::geometry {
 
-    #pragma pack(push, 1)
+    #pragma pack(push, 1)  // No padding between members
     struct vertex {
-        glm::vec3 position;
-        glm::vec3 normal;
-        glm::vec2 texcoord;
+        glm::vec3 position;  // 12 bytes
+        float uv_x;          // 4 bytes
+        glm::vec3 normal;    // 12 bytes
+        float uv_y;          // 4 bytes
     };
     #pragma pack(pop)
 
@@ -24,12 +25,6 @@ namespace GLT::mesh {
 
         u32 vertex_ssbo = 0;
         u32 index_ssbo = 0;
-
-        void create_buffers() {
-
-            vertex_buffer.create(vertices.data(), vertices.size() * sizeof(GLT::mesh::vertex));
-            index_buffer.create(indices.data(), indices.size() * sizeof(u32));
-        }
     };
 
 }

@@ -19,6 +19,7 @@ IncludeDir["tinyobjloader"]     = "%{wks.location}/%{vendor_path.tinyobjloader}"
 IncludeDir["stb_image"]         = "%{wks.location}/%{vendor_path.stb_image}"
 IncludeDir["ImGuizmo"]          = "%{wks.location}/%{vendor_path.ImGuizmo}"
 IncludeDir["assimp"]          	= "/usr/include/assimp"
+IncludeDir["meshoptimizer"]		= "/usr/include"
 
 
 
@@ -99,7 +100,7 @@ project "gluttony"
 		"assets",
 		"vendor",
         
-        "%{IncludeDir.glew}",
+		"%{IncludeDir.glew}",
 		"%{IncludeDir.glm}",
 		"%{IncludeDir.glfw}/include",
 		"%{IncludeDir.ImGui}",
@@ -108,12 +109,14 @@ project "gluttony"
 		"%{IncludeDir.entt}",
 		"%{IncludeDir.ImGuizmo}",
 		"%{IncludeDir.assimp}",
+    	"%{IncludeDir.meshoptimizer}",
 	}
 	
 	links
 	{
 		"ImGui",
 		"assimp",
+    	"meshoptimizer",
 	}
 
 	libdirs 

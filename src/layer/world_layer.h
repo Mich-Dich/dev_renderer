@@ -3,15 +3,14 @@
 #include "layer/layer.h"
 // #include "engine/game_objects/camera.h"
 // #include "engine/game_objects/player_controller.h"
-// #include "engine/world/entity.h"		// importa map
-// #include "engine/world/map.h"
+// #include "engine/geometry/entity.h"		// importa map
+// #include "engine/geometry/map.h"
 
 namespace GLT {
 	
 	// ============= DEV-ONLY =============
-	namespace mesh { class static_mesh; }
+	namespace geometry { class static_mesh; }
 	// ============= DEV-ONLY =============
-
 
 	class world_layer : public layer {
 	public:
@@ -47,11 +46,9 @@ namespace GLT {
 		// @param [should_pause] Whether the system should be paused.
 		void pause(bool should_pause);
 
-
 		// ============= DEV-ONLY =============
-		ref<GLT::mesh::static_mesh> GET_RENDER_MESH();
+		ref<GLT::geometry::static_mesh> GET_RENDER_MESH();
 		// ============= DEV-ONLY =============
-
 
 	private:
 

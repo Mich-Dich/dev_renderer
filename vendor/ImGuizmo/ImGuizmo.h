@@ -231,7 +231,7 @@ namespace IMGUIZMO_NAMESPACE {
 
    // Allow axis to flip
    // When true (default), the guizmo axis flip for better visibility
-   // When false, they always stay along the positive world/local axis
+   // When false, they always stay along the positive geometry/local axis
    IMGUI_API PUBLIC_API void AllowAxisFlip(bool value);
 
    // Configure the limit where axis are hidden

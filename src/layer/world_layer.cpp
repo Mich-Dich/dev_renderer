@@ -10,7 +10,7 @@
 
 // ============= DEV-ONLY =============
 #include "application.h"
-#include "world/static_mesh.h"
+#include "geometry/static_mesh.h"
 #include "factories/mesh/asset_importer.h"
 #include "engine/render/buffer.h"
 #include "engine/render/renderer.h"
@@ -20,8 +20,8 @@
 namespace GLT {
 	
 	// ============= DEV-ONLY =============
-	static ref<GLT::mesh::static_mesh> MAIN_RENDER_MESH = create_ref<GLT::mesh::static_mesh>();
-	ref<GLT::mesh::static_mesh> world_layer::GET_RENDER_MESH() { return MAIN_RENDER_MESH; }
+	static ref<GLT::geometry::static_mesh> MAIN_RENDER_MESH = create_ref<GLT::geometry::static_mesh>();
+	ref<GLT::geometry::static_mesh> world_layer::GET_RENDER_MESH() { return MAIN_RENDER_MESH; }
 	// ============= DEV-ONLY =============
 
 	world_layer::world_layer() { 
@@ -58,12 +58,21 @@ namespace GLT {
 
 		//float aspect = m_swapchain->get_extentAspectRatio();
 		//m_editor_camera.set_view_target(glm::vec3(-1.0f, -2.0f, -3.0f), glm::vec3(0.0f));
-		
+				
 		// ============= DEV-ONLY =============
-		ASSERT(GLT::factory::mesh::load_mesh("/home/mich/Documents/gameassets_3D/_exports/basic_test_meshes/box.glb", MAIN_RENDER_MESH), "test mesh imported successfully", "Failed to import test mesh");
-		MAIN_RENDER_MESH->create_buffers();
+		ASSERT(GLT::factory::geometry::load_mesh("/home/mich/Documents/gameassets_3D/_exports/basic_test_meshes/sphere.glb", MAIN_RENDER_MESH), "test mesh imported successfully", "Failed to import test mesh");
+
+		// glm::mat4 transform = MAIN_RENDER_MESH->transform;
+		// for (auto& vertex : MAIN_RENDER_MESH->vertices) {
+		// 	glm::vec4 pos = transform * glm::vec4(vertex.position, 1.0f);
+		// 	vertex.position = glm::vec3(pos);
+		// 	// Transform normals using inverse transpose
+		// 	glm::mat3 normalMatrix = glm::transpose(glm::inverse(glm::mat3(transform)));
+		// 	vertex.normal = glm::normalize(normalMatrix * vertex.normal);
+		// }
 		application::get().get_renderer()->upload_mesh(MAIN_RENDER_MESH);
 		// ============= DEV-ONLY =============
+
 
 		LOG(Trace, "attaching world_layer");
 	}
