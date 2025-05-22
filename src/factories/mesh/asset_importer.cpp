@@ -62,6 +62,7 @@ namespace GLT::factory::geometry {
             }
         }
 
+        out_mesh->compute_bounds();
         return true;
     }
 

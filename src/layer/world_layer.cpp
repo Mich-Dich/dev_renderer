@@ -61,15 +61,6 @@ namespace GLT {
 				
 		// ============= DEV-ONLY =============
 		ASSERT(GLT::factory::geometry::load_mesh("/home/mich/Documents/gameassets_3D/_exports/basic_test_meshes/sphere.glb", MAIN_RENDER_MESH), "test mesh imported successfully", "Failed to import test mesh");
-
-		// glm::mat4 transform = MAIN_RENDER_MESH->transform;
-		// for (auto& vertex : MAIN_RENDER_MESH->vertices) {
-		// 	glm::vec4 pos = transform * glm::vec4(vertex.position, 1.0f);
-		// 	vertex.position = glm::vec3(pos);
-		// 	// Transform normals using inverse transpose
-		// 	glm::mat3 normalMatrix = glm::transpose(glm::inverse(glm::mat3(transform)));
-		// 	vertex.normal = glm::normalize(normalMatrix * vertex.normal);
-		// }
 		application::get().get_renderer()->upload_mesh(MAIN_RENDER_MESH);
 		// ============= DEV-ONLY =============
 

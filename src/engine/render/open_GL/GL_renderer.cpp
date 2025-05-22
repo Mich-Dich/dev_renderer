@@ -70,6 +70,12 @@ namespace GLT::render::open_GL {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
         ref<GLT::geometry::static_mesh> mesh = application::get().get_world_layer()->GET_RENDER_MESH();
+        mesh->update_world_bounds(mesh->transform);
+
+        GLint loc_center = glGetUniformLocation(m_shader_program, "u_mesh_center");
+        GLint loc_radius = glGetUniformLocation(m_shader_program, "u_mesh_radius");
+        glUniform3f(loc_center, mesh->world_center.x, mesh->world_center.y, mesh->world_center.z);
+        glUniform1f(loc_radius, mesh->world_radius);
         glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, mesh->vertex_ssbo);
         glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, mesh->index_ssbo);
 

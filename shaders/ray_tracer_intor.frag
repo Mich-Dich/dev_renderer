@@ -3,6 +3,9 @@
 precision mediump float;
 #endif
 
+uniform vec3 u_mesh_center;
+uniform float u_mesh_radius;
+
 uniform vec2 u_resolution;
 uniform vec2 u_mouse;
 uniform float u_time;
@@ -38,6 +41,25 @@ ray create_camera_ray(vec2 pixel_coord) {
     return ray(vec3(0., 0., -5.), normalize(vec3(uv, 1.0)));
 }
 
+bool intersect_ray_sphere(ray r, vec3 center, float radius, out float t) {
+    vec3 oc = r.origin - center;
+    float a = dot(r.dir, r.dir);
+    float b = 2.0 * dot(oc, r.dir);
+    float c = dot(oc, oc) - radius * radius;
+    float disc = b * b - 4.0 * a * c;
+    
+    if (disc < 0.0) return false;
+    
+    float sqrt_disc = sqrt(disc);
+    float t0 = (-b - sqrt_disc) / (2.0 * a);
+    float t1 = (-b + sqrt_disc) / (2.0 * a);
+    
+    t = min(t0, t1);
+    if (t < 0.0) t = max(t0, t1);
+    
+    return t > 0.0;
+}
+
 bool intersect_ray_triangle(ray r, vec3 v0, vec3 v1, vec3 v2, out float t, out float u, out float v) {
     vec3 e1 = v1 - v0;
     vec3 e2 = v2 - v0;
@@ -64,6 +86,13 @@ void main() {
     vec3 light_source = normalize(vec3(1.0 + sin(u_time * 2.0), 1.0, -1.0));
     vec3 color = vec3(0.0);
     
+    float t_sphere;
+    if (!intersect_ray_sphere(cam_ray, u_mesh_center, u_mesh_radius, t_sphere)) {
+        color = mix(vec3(0.2, 0.2, 0.3), vec3(0.1, 0.4, 0.9), max(0.0, cam_ray.dir.y));
+        FragColor = vec4(color, 1.0);
+        return;
+    }
+
     float t_min = 1e4;
     vec3 hit_normal = vec3(0.0);
     bool hit = false;

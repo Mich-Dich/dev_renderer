@@ -25,6 +25,43 @@ namespace GLT::geometry {
 
         u32 vertex_ssbo = 0;
         u32 index_ssbo = 0;
+
+        glm::vec3 model_center{0.f};
+        f32 model_radius = 0.f;
+        glm::vec3 world_center{0.f};
+        f32 world_radius = 0.f;
+
+        void compute_bounds() {
+           
+            if (vertices.empty())
+                return;
+            
+            glm::vec3 min = vertices[0].position;
+            glm::vec3 max = vertices[0].position;
+            for (const auto& v : vertices) {
+                min = glm::min(min, v.position);
+                max = glm::max(max, v.position);
+            }
+            
+            model_center = (min + max) * 0.5f;
+            model_radius = 0.f;
+            for (const auto& v : vertices) {
+                float dist = glm::length(v.position - model_center);
+                model_radius = glm::max(model_radius, dist);
+            }
+        }
+
+        void update_world_bounds(const glm::mat4& transform) {
+
+            world_center = glm::vec3(transform * glm::vec4(model_center, 1.0f));
+            glm::vec3 scale(
+                glm::length(transform[0]),
+                glm::length(transform[1]),
+                glm::length(transform[2])
+            );
+            float max_scale = glm::max(scale.x, glm::max(scale.y, scale.z));
+            world_radius = model_radius * max_scale;
+        }
     };
 
 }
