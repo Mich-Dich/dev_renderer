@@ -12,6 +12,7 @@ namespace GLT {
     class camera;
     class layer_stack;
     class world_layer;
+    class player_controller;
     namespace render    { class renderer; }
     namespace UI        { class imgui_layer; }
 
@@ -34,6 +35,7 @@ namespace GLT {
         DEFAULT_GETTER(static ref<window>,							        window);
         DEFAULT_GETTER(UI::imgui_layer*,								    imgui_layer);
         DEFAULT_GETTER(world_layer*,								        world_layer);
+        const std::filesystem::path get_project_path();
 
         FORCEINLINE static application& get()								{ return *s_instance; }
         FORCEINLINE static void close_application()							{ m_running = false; }
@@ -50,7 +52,7 @@ namespace GLT {
         void restore_window();
         void maximize_window();
 
-        // void register_player_controller(ref<player_controller> player_controller) { m_world_layer->register_player_controller(player_controller); }
+        void register_player_controller(ref<player_controller> player_controller);
         void get_fps_values(bool& limit_fps, u32& target_fps, u32& current_fps, f32& work_time, f32& sleep_time);
 
         // ---------------------- fps control ---------------------- 

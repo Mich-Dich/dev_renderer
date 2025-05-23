@@ -1,22 +1,39 @@
 
 ========================================================
-Log initalized at [2025-05-22 22:21:46]
+Log initalized at [2025-05-23 19:28:18]
 ========================================================
-[[38;5;246m22:21:46:676[0m] [[38;5;246mTRACE application.cpp - application:40[0m] init
-[[38;5;246m22:21:46:676[0m] [[38;5;246mTRACE application.cpp - application:43[0m] init engine
-[[38;5;246m22:21:46:676[0m] [[38;5;246mTRACE window.cpp - window:31[0m] init
-[[38;5;246m22:21:46:697[0m] [[38;5;246mTRACE window.cpp - window:38[0m] GLFW initialized
-[[38;5;246m22:21:46:697[0m] [[38;5;246mTRACE window.cpp - window:66[0m] Monitor: 0 data: 1920 / 0 / 3440 / 1392
-[[38;5;246m22:21:46:697[0m] [[38;5;246mTRACE window.cpp - window:66[0m] Monitor: 1 data: 0 / 180 / 1920 / 1080
-[[38;5;246m22:21:46:968[0m] [[38;5;246mTRACE window.cpp - window:77[0m] Creating window [Small renderer width: 1592  height: 865]
-[[38;5;246m22:21:46:968[0m] [[38;5;246mTRACE window.cpp - window:81[0m] window pos [Small renderer X: 100  Y: 100]
-[[33m22:21:46:968[0m] [[33mWARN  window.cpp - set_vsync:220[0m] VSync functionality not supported yet
-[[38;5;246m22:21:46:968[0m] [[38;5;246mTRACE layer_stack.cpp - layer_stack:10[0m] init
-[[38;5;246m22:21:46:971[0m] [[38;5;246mTRACE GL_renderer.cpp - GL_renderer:35[0m] OpenGL Version: 4.6 (Core Profile) Mesa 24.2.8-1ubuntu1~24.04.1
-[[38;5;246m22:21:46:971[0m] [[38;5;246mTRACE GL_renderer.cpp - GL_renderer:36[0m] GLSL Version: 4.60
-[[38;5;246m22:21:46:971[0m] [[38;5;246mTRACE GL_renderer.cpp - GL_renderer:37[0m] Vendor: AMD
-[[38;5;246m22:21:46:971[0m] [[38;5;246mTRACE GL_renderer.cpp - GL_renderer:38[0m] Renderer: AMD Radeon Graphics (radeonsi, renoir, LLVM 19.1.1, DRM 3.57, 6.8.0-60-generic)
-[[38;5;246m22:21:46:986[0m] [[38;5;246mTRACE world_layer.cpp - world_layer:29[0m] init
-[[38;5;246m22:21:46:986[0m] [[38;5;246mTRACE world_layer.cpp - on_attach:63[0m] test mesh imported successfully
-[[38;5;246m22:21:46:987[0m] [[38;5;246mTRACE world_layer.cpp - on_attach:68[0m] attaching world_layer
-[[38;5;246m22:21:46:987[0m] [[38;5;246mTRACE imgui_layer.cpp - imgui_layer:69[0m] init
+[[38;5;246m19:28:18:825[0m] [[38;5;246mTRACE application.cpp - application:43[0m] init
+[[38;5;246m19:28:18:826[0m] [[38;5;246mTRACE application.cpp - application:46[0m] init engine
+[[38;5;246m19:28:18:826[0m] [[38;5;246mTRACE window.cpp - window:31[0m] init
+[[38;5;246m19:28:18:849[0m] [[38;5;246mTRACE window.cpp - window:38[0m] GLFW initialized
+[[38;5;246m19:28:18:849[0m] [[38;5;246mTRACE window.cpp - window:66[0m] Monitor: 0 data: 1920 / 0 / 3440 / 1392
+[[38;5;246m19:28:18:849[0m] [[38;5;246mTRACE window.cpp - window:66[0m] Monitor: 1 data: 0 / 180 / 1920 / 1080
+[[38;5;246m19:28:18:978[0m] [[38;5;246mTRACE window.cpp - window:77[0m] Creating window [Small renderer width: 1592  height: 865]
+[[38;5;246m19:28:18:978[0m] [[38;5;246mTRACE window.cpp - window:81[0m] window pos [Small renderer X: 100  Y: 100]
+[[33m19:28:18:978[0m] [[33mWARN  window.cpp - set_vsync:220[0m] VSync functionality not supported yet
+[[38;5;246m19:28:18:979[0m] [[38;5;246mTRACE layer_stack.cpp - layer_stack:10[0m] init
+[[38;5;246m19:28:18:985[0m] [[38;5;246mTRACE GL_renderer.cpp - GL_renderer:35[0m] OpenGL Version: 4.6 (Core Profile) Mesa 24.2.8-1ubuntu1~24.04.1
+[[38;5;246m19:28:18:985[0m] [[38;5;246mTRACE GL_renderer.cpp - GL_renderer:36[0m] GLSL Version: 4.60
+[[38;5;246m19:28:18:985[0m] [[38;5;246mTRACE GL_renderer.cpp - GL_renderer:37[0m] Vendor: AMD
+[[38;5;246m19:28:18:985[0m] [[38;5;246mTRACE GL_renderer.cpp - GL_renderer:38[0m] Renderer: AMD Radeon Graphics (radeonsi, renoir, LLVM 19.1.1, DRM 3.57, 6.8.0-60-generic)
+[[38;5;246m19:28:18:993[0m] [[38;5;246mTRACE world_layer.cpp - world_layer:33[0m] init
+[[38;5;246m19:28:18:993[0m] [[38;5;246mTRACE camera.cpp - camera:11[0m] init
+[[94m19:28:19:089[0m] [[94mDEBUG asset_importer.cpp - optimize_static_mesh:72[0m] Function took: [2468.64]
+[[94m19:28:19:089[0m] [[94mDEBUG asset_importer.cpp - load_static_mesh:141[0m] Function took: [93729.6]
+[[38;5;246m19:28:19:096[0m] [[38;5;246mTRACE world_layer.cpp - on_attach:67[0m] test mesh imported successfully
+[[38;5;246m19:28:19:097[0m] [[38;5;246mTRACE world_layer.cpp - on_attach:72[0m] attaching world_layer
+[[38;5;246m19:28:19:097[0m] [[38;5;246mTRACE imgui_layer.cpp - imgui_layer:71[0m] init
+[[38;5;246m19:28:19:097[0m] [[38;5;246mTRACE imgui_layer.cpp - on_attach:105[0m] attach imgui layer
+[[38;5;246m19:28:19:152[0m] [[38;5;246mTRACE application.cpp - application:65[0m] register editor controller
+[[38;5;246m19:28:19:152[0m] [[38;5;246mTRACE editor_controller.cpp - editor_controller:22[0m] init
+[[38;5;246m19:28:19:152[0m] [[38;5;246mTRACE player_controller.h - register_mapping:34[0m] register Input mapping
+[[38;5;246m19:28:21:379[0m] [[38;5;246mTRACE application.cpp - run:110[0m] Exiting main run loop
+[[38;5;246m19:28:21:379[0m] [[38;5;246mTRACE imgui_layer.cpp - on_detach:152[0m] detach imgui layer
+[[38;5;246m19:28:21:380[0m] [[38;5;246mTRACE imgui_layer.cpp - ~imgui_layer:99[0m] shutdown
+[[38;5;246m19:28:21:380[0m] [[38;5;246mTRACE world_layer.cpp - on_detach:80[0m] detaching world_layer
+[[38;5;246m19:28:21:380[0m] [[38;5;246mTRACE world_layer.cpp - ~world_layer:38[0m] shutdown
+[[38;5;246m19:28:21:380[0m] [[38;5;246mTRACE editor_controller.cpp - ~editor_controller:28[0m] shutdown
+[[38;5;246m19:28:21:380[0m] [[38;5;246mTRACE camera.cpp - ~camera:13[0m] shutdown
+[[38;5;246m19:28:21:381[0m] [[38;5;246mTRACE layer_stack.cpp - ~layer_stack:17[0m] shutdown
+[[38;5;246m19:28:21:430[0m] [[38;5;246mTRACE window.cpp - ~window:111[0m] shutdown
+[[38;5;246m19:28:21:430[0m] [[38;5;246mTRACE application.cpp - ~application:83[0m] shutdown

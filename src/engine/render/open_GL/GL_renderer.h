@@ -17,9 +17,8 @@ namespace GLT::render::open_GL {
         void draw_frame(float delta_time);
         void set_size(const u32 width, const u32 height);
 
-        void upload_mesh(ref<GLT::geometry::static_mesh> mesh);
-        void reload_fragment_shader(const std::filesystem::path& frag_file);
-        void prepare_mesh(ref<GLT::geometry::static_mesh> mesh);
+        void upload_static_mesh(ref<GLT::geometry::static_mesh> mesh);
+        bool reload_fragment_shader(const std::filesystem::path& frag_file, std::string& output);
 
         // -------- ImGui --------
         void imgui_init();
@@ -35,7 +34,7 @@ namespace GLT::render::open_GL {
         
         void create_shader_program();
         void create_fullscreen_quad();
-        GLuint compile_shader(GLenum type, const char* source);
+        bool compile_shader(GLuint& shader_handle, GLenum type, const char* source, std::string& output);
     };
 
 }

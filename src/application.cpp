@@ -18,6 +18,9 @@
 #include "layer/imgui_layer.h"
 #include "layer/world_layer.h"
 
+// TODO: move to editor init function        
+#include "editor/controller/editor_controller.h"
+
 #include "application.h"
 
 // ==================================================================== setup ====================================================================
@@ -53,10 +56,14 @@ namespace GLT {
         // ---------------------------------------- layers ----------------------------------------
         m_world_layer = new world_layer();
 		m_layerstack->push_layer(m_world_layer);
-		// m_renderer->set_active_camera(m_world_layer->get_editor_camera());
+		m_renderer->set_active_camera(m_world_layer->get_editor_camera());
 
         m_imgui_layer = new UI::imgui_layer();
         m_layerstack->push_overlay(m_imgui_layer);
+
+        // TODO: move to editor init function        
+		LOG(Trace, "register editor controller");
+        m_world_layer->register_player_controller(create_ref<editor_controller>());
     }
     
     application::~application() {
@@ -122,6 +129,8 @@ namespace GLT {
         set_fps_settings(math::max(new_limit, (u32)1 ));
     }
     
+    void application::register_player_controller(ref<player_controller> player_controller) { m_world_layer->register_player_controller(player_controller); }
+
     void application::get_fps_values(bool& limit_fps, u32& target_fps, u32& current_fps, f32& work_time, f32& sleep_time) {
     
         limit_fps = m_limit_fps;
@@ -137,6 +146,9 @@ namespace GLT {
     
     void application::maximize_window() { m_window->queue_event([window = m_window] { window->maximize_window(); }); }
     
+    const std::filesystem::path application::get_project_path() { return util::get_executable_path().parent_path(); }               // TODO: change to actual project path when implemented
+
+
     // ==================================================================== PRIVATE ====================================================================
     
     void application::set_fps_settings(u32 target_fps) { target_duration = static_cast<f32>(1.0 / target_fps); }

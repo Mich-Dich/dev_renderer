@@ -14,22 +14,31 @@ namespace GLT::geometry {
     };
     #pragma pack(pop)
 
+    
+    #pragma pack(push, 1)  // No padding between members
+    struct bounding_volume {
+        glm::vec3   origin;
+        u32         child_0;
+        glm::vec3   extend;
+        u32         child_1;
+    };
+    #pragma pack(pop)
+
+
     struct static_mesh {
         std::vector<vertex>         vertices{};
         std::vector<u32>            indices{};
-        glm::mat4                   transform{1.0f};
+
+        glm::mat4                   transform{1.0f};        // TODO: move to transform_component as soon as ECS is integrated
+        glm::vec3                   center{0.f};
+        f32                         radius = 0.f;           // a sphere around the model_center
+        glm::vec3                   size;                   // use same center as sphere bounds
 
         GLT::render::buffer         vertex_buffer{GLT::render::buffer::type::VERTEX, GLT::render::buffer::usage::STATIC};
         GLT::render::buffer         index_buffer{GLT::render::buffer::type::INDEX, GLT::render::buffer::usage::STATIC};
-        u32 vao = 0;
-
-        u32 vertex_ssbo = 0;
-        u32 index_ssbo = 0;
-
-        glm::vec3 model_center{0.f};
-        f32 model_radius = 0.f;
-        glm::vec3 world_center{0.f};
-        f32 world_radius = 0.f;
+        u32                         vao = 0;
+        u32                         vertex_ssbo = 0;
+        u32                         index_ssbo = 0;
 
         void compute_bounds() {
            
@@ -43,24 +52,12 @@ namespace GLT::geometry {
                 max = glm::max(max, v.position);
             }
             
-            model_center = (min + max) * 0.5f;
-            model_radius = 0.f;
+            center = (min + max) * 0.5f;
+            radius = 0.f;
             for (const auto& v : vertices) {
-                float dist = glm::length(v.position - model_center);
-                model_radius = glm::max(model_radius, dist);
+                float dist = glm::length(v.position - center);
+                radius = glm::max(radius, dist);
             }
-        }
-
-        void update_world_bounds(const glm::mat4& transform) {
-
-            world_center = glm::vec3(transform * glm::vec4(model_center, 1.0f));
-            glm::vec3 scale(
-                glm::length(transform[0]),
-                glm::length(transform[1]),
-                glm::length(transform[2])
-            );
-            float max_scale = glm::max(scale.x, glm::max(scale.y, scale.z));
-            world_radius = model_radius * max_scale;
         }
     };
 

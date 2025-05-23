@@ -8,6 +8,7 @@ vendor_path["ImGui"]         	= "vendor/imgui"
 vendor_path["tinyobjloader"] 	= "vendor/tinyobjloader"
 vendor_path["stb_image"]     	= "vendor/stb_image"
 vendor_path["ImGuizmo"]         = "vendor/ImGuizmo"
+vendor_path["meshoptimizer"]   	= "vendor/meshoptimizer"
 
 ------------ include ------------ 
 IncludeDir = {}
@@ -19,7 +20,7 @@ IncludeDir["tinyobjloader"]     = "%{wks.location}/%{vendor_path.tinyobjloader}"
 IncludeDir["stb_image"]         = "%{wks.location}/%{vendor_path.stb_image}"
 IncludeDir["ImGuizmo"]          = "%{wks.location}/%{vendor_path.ImGuizmo}"
 IncludeDir["assimp"]          	= "/usr/include/assimp"
-IncludeDir["meshoptimizer"]		= "/usr/include"
+IncludeDir["meshoptimizer"] 	= "%{wks.location}/%{vendor_path.meshoptimizer}/src"
 
 
 
@@ -49,9 +50,15 @@ workspace "gluttony"
 
 	if os.target() == "linux" then
 		print("---------- target platform is linux => manually compile GLFW ----------")
-		os.execute("cmake -S ./vendor/glfw -B ./vendor/glfw/build")			-- manuel compilation
-		os.execute("cmake --build ./vendor/glfw/build")						-- manuel compilation
+		os.execute("cmake -S ./vendor/glfw -B ./vendor/glfw/build")								-- manuel compilation
+		os.execute("cmake --build ./vendor/glfw/build")											-- manuel compilation
 		print("---------- Done compiling GLFW ----------")
+
+		print("---------- target platform is linux => manually compile meshoptimizer ----------")
+		os.execute("{MKDIR} vendor/meshoptimizer/build")		-- manuel compilation
+		os.execute("cmake -S ./vendor/meshoptimizer -B ./vendor/meshoptimizer/build")		-- manuel compilation
+		os.execute("cmake --build ./vendor/meshoptimizer/build")							-- manuel compilation
+		print("---------- Done compiling meshoptimizer ----------")
 	end
 
 group "dependencies"
@@ -92,6 +99,8 @@ project "gluttony"
 
 		"vendor/ImGuizmo/ImGuizmo.h",
 		"vendor/ImGuizmo/ImGuizmo.cpp",
+		"vendor/meshoptimizer/src/**.cpp",
+		"vendor/meshoptimizer/src/**.h"
 	}
 
 	includedirs
@@ -109,14 +118,13 @@ project "gluttony"
 		"%{IncludeDir.entt}",
 		"%{IncludeDir.ImGuizmo}",
 		"%{IncludeDir.assimp}",
-    	"%{IncludeDir.meshoptimizer}",
+		"%{IncludeDir.meshoptimizer}",
 	}
 	
 	links
 	{
 		"ImGui",
 		"assimp",
-    	"meshoptimizer",
 	}
 
 	libdirs 
@@ -142,12 +150,14 @@ project "gluttony"
 		libdirs
 		{
 			"%{wks.location}/vendor/glfw/build/src",
+			"%{wks.location}/vendor/meshoptimizer/build",
 			"/usr/lib/x86_64-linux-gnu",
 			"/usr/lib/x86_64-linux-gnu/qt5",
 		}
 	
 		links
 		{
+			"meshoptimizer",
 			"GLEW",
         	"GL",
 			"glfw3",

@@ -8,9 +8,13 @@
 
 namespace GLT {
 	
+	class camera;
+	class player_controller;
+	
 	// ============= DEV-ONLY =============
 	namespace geometry { class static_mesh; }
 	// ============= DEV-ONLY =============
+
 
 	class world_layer : public layer {
 	public:
@@ -19,11 +23,11 @@ namespace GLT {
 		~world_layer();
 		DELETE_COPY_CONSTRUCTOR(world_layer);
 
-		// DEFAULT_GETTER_C(ref<camera>, editor_camera)
+		DEFAULT_GETTER_C(ref<camera>, editor_camera)
 		// DEFAULT_GETTER_C(const ref<map>&, map)
-		// GETTER_C(ref<player_controller>, current_player_controller, m_player_controller)
+		GETTER_C(ref<player_controller>, current_player_controller, m_player_controller)
 
-		// void register_player_controller(ref<player_controller> player_controller);
+		void register_player_controller(ref<player_controller> player_controller);
 		// void set_map(const ref<map> map);
 		
 		virtual void on_attach();
@@ -53,8 +57,8 @@ namespace GLT {
 	private:
 
 		// ref<map>					m_map{};
-		// ref<camera>					m_editor_camera{};
-		// ref<player_controller>		m_player_controller{};
+		ref<camera>					m_editor_camera{};
+		ref<player_controller>		m_player_controller{};
 		system_state				m_system_state = system_state::inactive;
 	};
 	

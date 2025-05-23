@@ -4,15 +4,81 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 
+#define MESHOPTIMIZER_EXPERIMENTAL
+#include <meshoptimizer.h>
+
+#include "util/timing/stopwatch.h"
+
 #include "asset_importer.h"
 
 
 namespace GLT::factory::geometry {
 
-    bool load_mesh(const std::filesystem::path& file_path, ref<GLT::geometry::static_mesh> out_mesh) {
-    
-        Assimp::Importer importer;
+    void optimize_static_mesh(ref<GLT::geometry::static_mesh> mesh) {
 
+        f32 time = 0;
+        util::stopwatch loc_stopwatch = util::stopwatch(&time, duration_precision::microseconds);
+        
+        // generate vertex remap
+        std::vector<unsigned int> remap(mesh->vertices.size());
+        size_t vertex_count = meshopt_generateVertexRemap(
+            remap.data(),
+            mesh->indices.data(),
+            mesh->indices.size(),
+            mesh->vertices.data(),
+            mesh->vertices.size(),
+            sizeof(GLT::geometry::vertex)
+        );
+
+        // allocate remapped data
+        std::vector<GLT::geometry::vertex> vertices(vertex_count);
+        std::vector<unsigned int> indices(mesh->indices.size());
+        
+        // remap indices and vertices
+        meshopt_remapIndexBuffer(indices.data(), mesh->indices.data(), mesh->indices.size(), remap.data());
+        meshopt_remapVertexBuffer(
+            vertices.data(),
+            mesh->vertices.data(),
+            mesh->vertices.size(),
+            sizeof(GLT::geometry::vertex),
+            remap.data()
+        );
+
+        // optimize vertex cache
+        meshopt_optimizeVertexCache(indices.data(), indices.data(), indices.size(), vertices.size());
+
+        // optimize overdraw
+        meshopt_optimizeOverdraw(
+            indices.data(), 
+            indices.data(), 
+            indices.size(),
+            &vertices[0].position.x,
+            vertices.size(),
+            sizeof(GLT::geometry::vertex),
+            1.05f
+        );
+
+        // optimize vertex fetch
+        meshopt_optimizeVertexFetch(
+            vertices.data(),
+            indices.data(),
+            indices.size(),
+            vertices.data(),
+            vertices.size(),
+            sizeof(GLT::geometry::vertex)
+        );
+
+        loc_stopwatch.stop();
+        LOG(Debug, "Function took: [" << time << "]")
+    }
+
+
+    bool load_static_mesh(const std::filesystem::path& file_path, ref<GLT::geometry::static_mesh> out_mesh) {
+    
+        f32 buffer = 0, time = 0;
+        util::stopwatch loc_stopwatch = util::stopwatch(&time, duration_precision::microseconds);
+        
+        Assimp::Importer importer;
         const aiScene* scene = importer.ReadFile(file_path.string(),
             aiProcess_Triangulate |
             aiProcess_GenNormals |          // Keep this to generate normals if missing
@@ -62,7 +128,18 @@ namespace GLT::factory::geometry {
             }
         }
 
+
+        loc_stopwatch.stop();
+        buffer = time;
+        
+        optimize_static_mesh(out_mesh);
+        
+        loc_stopwatch.restart();
+
         out_mesh->compute_bounds();
+        loc_stopwatch.stop();
+        LOG(Debug, "Function took: [" << buffer + time << "]")
+        
         return true;
     }
 

@@ -5,7 +5,6 @@
 #include <imgui.h>
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
-#include <meshoptimizer.h>
 
 #include "util/util.h"
 #include "application.h"
@@ -15,6 +14,7 @@
 #include "layer/world_layer.h"
 #include "geometry/static_mesh.h"
 #include "engine/platform/window.h"
+#include "game_object/camera.h"
 
 #include "GL_renderer.h"
 
@@ -47,6 +47,8 @@ namespace GLT::render::open_GL {
         glEnable(GL_CULL_FACE);
         glCullFace(GL_BACK);
 
+        m_active_camera = application::get().get_world_layer()->get_editor_camera();        // Force get editor camera for now
+
 #ifdef DEBUG
         glGenQueries(1, &m_total_render_time);
 #endif
@@ -68,27 +70,37 @@ namespace GLT::render::open_GL {
 
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    
-        ref<GLT::geometry::static_mesh> mesh = application::get().get_world_layer()->GET_RENDER_MESH();
-        mesh->update_world_bounds(mesh->transform);
-
-        GLint loc_center = glGetUniformLocation(m_shader_program, "u_mesh_center");
-        GLint loc_radius = glGetUniformLocation(m_shader_program, "u_mesh_radius");
-        glUniform3f(loc_center, mesh->world_center.x, mesh->world_center.y, mesh->world_center.z);
-        glUniform1f(loc_radius, mesh->world_radius);
-        glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, mesh->vertex_ssbo);
-        glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, mesh->index_ssbo);
+    	
+        // view = m_active_camera->get_view();
+		// proj = glm::perspective(glm::radians(m_active_camera->get_perspective_fov_y()), (float)m_draw_extent.width / (float)m_draw_extent.height, m_active_camera->get_clipping_far(), m_active_camera->get_clipping_near());
 
         glUseProgram(m_shader_program);
     
-        // Set uniforms
+        // ------ bind mesh ------
+        ref<GLT::geometry::static_mesh> mesh = application::get().get_world_layer()->GET_RENDER_MESH();
+        GLint loc_center = glGetUniformLocation(m_shader_program, "u_mesh_center");
+        GLint loc_radius = glGetUniformLocation(m_shader_program, "u_mesh_radius");
+        glUniform3f(loc_center, mesh->center.x, mesh->center.y, mesh->center.z);
+        glUniform1f(loc_radius, mesh->radius);
+        glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, mesh->vertex_ssbo);
+        glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, mesh->index_ssbo);
+        
+        // ------ Camera uniforms ------
+        const glm::mat4 inv_proj = glm::inverse(glm::perspective(glm::radians(m_active_camera->get_perspective_fov_y()), (float)m_window->get_width() / (float)m_window->get_height(), m_active_camera->get_clipping_far(), m_active_camera->get_clipping_near()));
+        const glm::mat4 inv_view = m_active_camera->get_inverse_view();
+        const glm::vec3 cam_pos = m_active_camera->get_position();
+
+        glUniformMatrix4fv(glGetUniformLocation(m_shader_program, "u_inv_proj"), 1, GL_FALSE, glm::value_ptr(inv_proj));
+        glUniformMatrix4fv(glGetUniformLocation(m_shader_program, "u_inv_view"), 1, GL_FALSE, glm::value_ptr(inv_view));
+        glUniform3f(glGetUniformLocation(m_shader_program, "u_cam_pos"), cam_pos.x, cam_pos.y, cam_pos.z);
+
+        // ------ Set uniforms ------
         GLint loc_resolution = glGetUniformLocation(m_shader_program, "u_resolution");
         GLint loc_mouse = glGetUniformLocation(m_shader_program, "u_mouse");
         GLint loc_time = glGetUniformLocation(m_shader_program, "u_time");
     
-        const int width = m_window->get_width();
         const int height = m_window->get_height();
-        glUniform2f(loc_resolution, (float)width, (float)height);
+        glUniform2f(loc_resolution, (float)m_window->get_width(), (float)height);
     
         m_window->get_mouse_position(mouse_pos);
         glUniform2f(loc_mouse, mouse_pos.x, (height - mouse_pos.y)); // Flip Y
@@ -96,13 +108,26 @@ namespace GLT::render::open_GL {
         static float totalTime = 0.0f;
         totalTime += delta_time;
         glUniform1f(loc_time, totalTime);
-    
-        // Draw fullscreen quad
+
+        // ------ Draw fullscreen quad ------
         glBindVertexArray(m_vao);
         glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
         glBindVertexArray(0);
     
-        // start new ImGui frame
+#ifdef DEBUG        // set performance stuff
+        glEndQuery(GL_TIME_ELAPSED);
+        GLint available = 0;
+        while (!available)
+            glGetQueryObjectiv(m_total_render_time, GL_QUERY_RESULT_AVAILABLE, &available);
+
+        GLuint64 elapsed_time;
+        glGetQueryObjectui64v(m_total_render_time, GL_QUERY_RESULT, &elapsed_time);
+        m_general_performance_metrik.renderer_draw_time[m_general_performance_metrik.current_index] = elapsed_time / 1e6f;
+        m_general_performance_metrik.meshes = 1;
+        m_general_performance_metrik.vertices = mesh->vertices.size();
+#endif
+
+        // ------ start new ImGui frame ------
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
@@ -115,59 +140,44 @@ namespace GLT::render::open_GL {
 
         // Swap buffers
         glfwSwapBuffers(m_window->get_window());
-
-#ifdef DEBUG
-        glEndQuery(GL_TIME_ELAPSED);
-        GLint available = 0;
-        while (!available)
-            glGetQueryObjectiv(m_total_render_time, GL_QUERY_RESULT_AVAILABLE, &available);
-
-        GLuint64 elapsed_time;
-        glGetQueryObjectui64v(m_total_render_time, GL_QUERY_RESULT, &elapsed_time);
-        m_general_performance_metrik.renderer_draw_time[m_general_performance_metrik.current_index] = elapsed_time / 1e6f;
-#endif
     }
     
 
-    GLuint GL_renderer::compile_shader(GLenum type, const char* source) {
+    bool GL_renderer::compile_shader(GLuint& shader_handle, GLenum type, const char* source, std::string& output) {
 
-        GLuint shader = glCreateShader(type);
-        glShaderSource(shader, 1, &source, nullptr);
-        glCompileShader(shader);
+        shader_handle = glCreateShader(type);
+        glShaderSource(shader_handle, 1, &source, nullptr);
+        glCompileShader(shader_handle);
         
         GLint success;
-        glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
+        glGetShaderiv(shader_handle, GL_COMPILE_STATUS, &success);
         if(!success) {
-            char infoLog[512];
-            glGetShaderInfoLog(shader, 512, nullptr, infoLog);
-            LOG(Error, "Shader compilation failed: " << infoLog);
+            char compiler_log[1024];
+            glGetShaderInfoLog(shader_handle, 1024, nullptr, compiler_log);
+            LOG(Error, "Shader compilation failed: " << compiler_log);
+            output = compiler_log;
+            return false;
         }
-        return shader;
+        return true;
     }
         
 
     void GL_renderer::set_size(const u32 width, const u32 height) { glViewport(0, 0, width, height); }
     
 
-    void GL_renderer::reload_fragment_shader(const std::filesystem::path& frag_file) {
+    bool GL_renderer::reload_fragment_shader(const std::filesystem::path& frag_file, std::string& output) {
 
         // Read new fragment shader source
         std::string frag_src = io::read_file(frag_file.string());
-        if (frag_src.empty()) {
-            LOG(Error, "Failed to read frag shader: " << frag_file);
-            return;
-        }
+        VALIDATE(!frag_src.empty(), output = "Could not find the file [" + frag_file.generic_string() + "]"; return false, "", "Failed to read frag shader: " << frag_file.generic_string() );
 
-        // --- Recreate shader program from scratch to avoid duplicate definitions ---
         // Read vertex shader again (to use same entry point)
         std::string vert_src = io::read_file("shaders/fullscreen_quad.vert");
-        if (vert_src.empty()) {
-            LOG(Error, "Failed to re-read vert shader");
-            return;
-        }
+        VALIDATE(!vert_src.empty(), output = "Could not read the file [" + frag_file.generic_string() + "]"; return false, "", "Failed to re-read vert shader");
 
-        GLuint vertShader = compile_shader(GL_VERTEX_SHADER, vert_src.c_str());
-        GLuint fragShader = compile_shader(GL_FRAGMENT_SHADER, frag_src.c_str());
+        GLuint vertShader{}, fragShader{};
+        VALIDATE(compile_shader(vertShader, GL_VERTEX_SHADER, vert_src.c_str(), output), return false, "", "Failed to compile vertex shader: " << output);
+        VALIDATE(compile_shader(fragShader, GL_FRAGMENT_SHADER, frag_src.c_str(), output), return false, "", "Failed to compile fragment shader: " << output);
 
         GLuint newProgram = glCreateProgram();
         glAttachShader(newProgram, vertShader);
@@ -178,14 +188,15 @@ namespace GLT::render::open_GL {
         GLint success;
         glGetProgramiv(newProgram, GL_LINK_STATUS, &success);
         if (!success) {
-            char infoLog[512];
-            glGetProgramInfoLog(newProgram, 512, nullptr, infoLog);
-            LOG(Error, "Shader relink failed: " << infoLog);
+            char compiler_log[1024];
+            glGetProgramInfoLog(newProgram, 1024, nullptr, compiler_log);
+            LOG(Error, "Shader relink failed: " << compiler_log);
             // Cleanup
             glDeleteShader(vertShader);
             glDeleteShader(fragShader);
             glDeleteProgram(newProgram);
-            return;
+            output = compiler_log;
+            return false;
         }
 
         // If successful, swap programs
@@ -197,69 +208,11 @@ namespace GLT::render::open_GL {
         glDeleteShader(fragShader);
 
         LOG(Info, "Shader program reloaded from " << frag_file);
+        return true;
     }
 
 
-    void GL_renderer::prepare_mesh(ref<GLT::geometry::static_mesh> mesh) {
-
-        // 1. Generate vertex remap
-        std::vector<unsigned int> remap(mesh->vertices.size());
-        size_t vertex_count = meshopt_generateVertexRemap(
-            remap.data(),
-            mesh->indices.data(),
-            mesh->indices.size(),
-            mesh->vertices.data(),
-            mesh->vertices.size(),
-            sizeof(GLT::geometry::vertex)
-        );
-
-        // 2. Allocate remapped data
-        std::vector<GLT::geometry::vertex> vertices(vertex_count);
-        std::vector<unsigned int> indices(mesh->indices.size());
-        
-        // 3. Remap indices and vertices
-        meshopt_remapIndexBuffer(indices.data(), mesh->indices.data(), mesh->indices.size(), remap.data());
-        meshopt_remapVertexBuffer(
-            vertices.data(),
-            mesh->vertices.data(),
-            mesh->vertices.size(),
-            sizeof(GLT::geometry::vertex),
-            remap.data()
-        );
-
-        // 4. Optimize vertex cache
-        meshopt_optimizeVertexCache(indices.data(), indices.data(), indices.size(), vertices.size());
-
-        // 5. Optimize overdraw
-        meshopt_optimizeOverdraw(
-            indices.data(), 
-            indices.data(), 
-            indices.size(),
-            &vertices[0].position.x,
-            vertices.size(),
-            sizeof(GLT::geometry::vertex),
-            1.05f
-        );
-
-        // 6. Optimize vertex fetch
-        meshopt_optimizeVertexFetch(
-            vertices.data(),
-            indices.data(),
-            indices.size(),
-            vertices.data(),
-            vertices.size(),
-            sizeof(GLT::geometry::vertex)
-        );
-
-        // Replace with optimized data
-        mesh->vertices = std::move(vertices);
-        mesh->indices = std::move(indices);
-    }
-
-
-    void GL_renderer::upload_mesh(ref<GLT::geometry::static_mesh> mesh) {
-
-        prepare_mesh(mesh);
+    void GL_renderer::upload_static_mesh(ref<GLT::geometry::static_mesh> mesh) {
 
         mesh->vertex_buffer.create(mesh->vertices.data(), mesh->vertices.size() * sizeof(GLT::geometry::vertex));
         mesh->index_buffer.create(mesh->indices.data(), mesh->indices.size() * sizeof(u32));
@@ -345,8 +298,10 @@ namespace GLT::render::open_GL {
         std::string frag_content = io::read_file("shaders/ray_tracer_intor.frag");
         ASSERT(!frag_content.empty(), "", "Failed to read frag shader");
     
-        GLuint vertexShader = compile_shader(GL_VERTEX_SHADER, vert_content.data());
-        GLuint fragmentShader = compile_shader(GL_FRAGMENT_SHADER, frag_content.data());
+        std::string shader_comp_output{};
+        GLuint vertexShader{}, fragmentShader{};
+        VALIDATE(compile_shader(vertexShader, GL_VERTEX_SHADER, vert_content.data(), shader_comp_output), return, "", "Failed to compile shader: " << shader_comp_output);
+        VALIDATE(compile_shader(fragmentShader, GL_FRAGMENT_SHADER, frag_content.data(), shader_comp_output), return, "", "Failed to compile shader: " << shader_comp_output);
     
         m_shader_program = glCreateProgram();
         glAttachShader(m_shader_program, vertexShader);
@@ -356,9 +311,9 @@ namespace GLT::render::open_GL {
         GLint success;
         glGetProgramiv(m_shader_program, GL_LINK_STATUS, &success);
         if(!success) {
-            char infoLog[512];
-            glGetProgramInfoLog(m_shader_program, 512, nullptr, infoLog);
-            LOG(Error, "Shader program linking failed: " << infoLog);
+            char compiler_log[1024];
+            glGetProgramInfoLog(m_shader_program, 1024, nullptr, compiler_log);
+            LOG(Error, "Shader program linking failed: " << compiler_log);
         }
     
         glDeleteShader(vertexShader);

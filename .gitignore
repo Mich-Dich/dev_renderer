@@ -37,3 +37,6 @@
 
 Makefile
 **.make
+
+# custom
+script.md

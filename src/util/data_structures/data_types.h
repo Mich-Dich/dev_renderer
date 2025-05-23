@@ -8,22 +8,22 @@
 // @brief Primitive type definitions for consistent sizing across platforms
 // =============================================
 
-typedef uint8_t  u8;    							///< 8-bit unsigned integer
-typedef uint16_t u16;   							///< 16-bit unsigned integer
-typedef uint32_t u32;   							///< 32-bit unsigned integer
-typedef uint64_t u64;   							///< 64-bit unsigned integer
+typedef uint8_t  u8;    							// 8-bit unsigned integer
+typedef uint16_t u16;   							// 16-bit unsigned integer
+typedef uint32_t u32;   							// 32-bit unsigned integer
+typedef uint64_t u64;   							// 64-bit unsigned integer
 
-typedef int8_t  int8;   							///< 8-bit signed integer
-typedef int16_t int16;  							///< 16-bit signed integer
-typedef int32_t int32;  							///< 32-bit signed integer
-typedef int64_t int64;  							///< 64-bit signed integer
+typedef int8_t  int8;   							// 8-bit signed integer
+typedef int16_t int16;  							// 16-bit signed integer
+typedef int32_t int32;  							// 32-bit signed integer
+typedef int64_t int64;  							// 64-bit signed integer
 
-typedef float f32;          						///< 32-bit floating point
-typedef double f64;         						///< 64-bit floating point
-typedef long double f128;   						///< 128-bit floating point (platform dependent)
+typedef float f32;          						// 32-bit floating point
+typedef double f64;         						// 64-bit floating point
+typedef long double f128;   						// 128-bit floating point (platform dependent)
 
 // Platform-specific types				
-typedef unsigned long long handle;  				///< Generic handle type for OS resources
+typedef unsigned long long handle;  				// Generic handle type for OS resources
 
 
 // Extension for asset files
@@ -36,15 +36,17 @@ typedef unsigned long long handle;  				///< Generic handle type for OS resource
 #define PROJECT_TEMP_DLL_PATH 	"_build_DLL"    
 
 // Directory structure macros
-#define METADATA_DIR            	"metadata"      ///< Directory for metadata files
-#define CONFIG_DIR              	"config"        ///< Directory for configuration files
-#define CONTENT_DIR             	"content"       ///< Directory for content files
-#define SOURCE_DIR              	"src"           ///< Directory for source code
+#define METADATA_DIR            	"metadata"      // Directory for metadata files
+#define CONFIG_DIR              	"config"        // Directory for configuration files
+#define CONTENT_DIR             	"content"       // Directory for content files
+#define SOURCE_DIR              	"src"           // Directory for source code
 
 // Configuration file extensions
-#define FILE_EXTENSION_CONFIG   	".yml"        	///< Extension for YAML config files
-#define FILE_EXTENSION_INI      	".ini"          ///< Extension for INI config files
+#define FILE_EXTENSION_CONFIG   	".yml"        	// Extension for YAML config files
+#define FILE_EXTENSION_INI      	".ini"          // Extension for INI config files
 
+#define PROJECT_PATH				application::get().get_project_path()
+#define PROJECT_NAME				application::get().get_project_data().name
 
 namespace GLT {
 

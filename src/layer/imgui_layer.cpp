@@ -12,6 +12,8 @@
 
 #include "layer.h"
 #include "application.h"
+#include "layer/world_layer.h"
+#include "game_object/camera.h"
 #include "engine/render/renderer.h"
 
 #include "imgui_layer.h"
@@ -211,13 +213,27 @@ namespace GLT::UI {
 		PROFILE_FUNCTION();
 		ImGui::SetCurrentContext(m_context);
 
+		static bool compile_result = true;
+		static std::string output{};
 		UI::set_next_window_pos(window_pos::top_left, 4.f);
 		ImGui::SetNextWindowBgAlpha(0.5f);
 		ImGui::Begin("Test", nullptr, ImGuiWindowFlags_AlwaysAutoResize); {
 
 			std::filesystem::path base_path = GLT::util::get_executable_path() / std::filesystem::path("..") / "shaders";
 
-			show_directory_tree(base_path, true, [this](const std::filesystem::path& shader_path) { application::get().get_renderer()->reload_fragment_shader(shader_path); });
+			show_directory_tree(base_path, true, [this](const std::filesystem::path& shader_path) { compile_result = application::get().get_renderer()->reload_fragment_shader(shader_path, output); });
+
+			static f32 loc_FOV = 45.f;
+			if (ImGui::SliderFloat("FOV", &loc_FOV, 0.f, 180.f))
+				application::get().get_world_layer()->get_editor_camera()->set_fov_y(loc_FOV);
+
+			if (!compile_result) {
+
+				ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.f, .2f, .2f, 1.f));
+				ImGui::SeparatorText("Compiler Error");
+				ImGui::PopStyleColor();
+				ImGui::Text(output.c_str());
+			}
 
 		} ImGui::End();
 
@@ -233,6 +249,28 @@ namespace GLT::UI {
 
 		// static const u32 const_array_size = sizeof(f32) * 100;
 		static bool show_graphs = true;
+
+		static auto last_update_time = std::chrono::steady_clock::now();
+		auto current_time = std::chrono::steady_clock::now();
+
+		static const std::chrono::milliseconds update_interval(50);		// Time interval (15 milliseconds)
+		static const u32 array_size = 100;
+		static f32 frame_times[array_size] = {};
+		static u32 array_pointer = 0;
+		constexpr f32 table_width = 280.f;
+
+		static bool show_progress_bars = true;
+		static bool show_graph = true;
+		
+		const f32 averagefps = math::calc_array_average(frame_times, array_size);
+
+		// Check if the time since the last update exceeds the update interval
+		if (current_time - last_update_time >= update_interval) {
+
+			frame_times[array_pointer % array_size] = (f32)m_current_fps;
+			array_pointer = (array_pointer + 1) % array_size;
+			last_update_time = current_time;
+		}
 
 		ImGuiWindowFlags window_flags = (
 			ImGuiWindowFlags_NoDecoration |
@@ -250,14 +288,94 @@ namespace GLT::UI {
 		ImGui::SetNextWindowBgAlpha(0.8f); // Transparent background
 		if (ImGui::Begin("Renderer Metrik##Engine", &m_show_FPS_window, window_flags)) {
 
-			auto* metrik = application::get().get_renderer()->get_general_performance_metrik_pointer();
-			if (UI::begin_table("Performance Display", true, ImVec2(280, 0))) {
+			
+			// Get the line spacing(vertical padding around text)
+			// f32 lineSpacing = ImGui::GetStyle().ItemSpacing.y / 2;
+			// f32 fontSize = ImGui::GetFontSize();
+			f32 work_percent = static_cast<f32>(m_work_time / (m_work_time + m_sleep_time));
+			f32 sleep_percent = 1 - work_percent;
+			char formatted_text[32];
+			ImVec2 curser_pos;
+			ImVec2 textSize;
 
-				UI::table_row_text("mesh draws", "%d", metrik->mesh_draw);
-				UI::table_row_text("material binding count", "%d", metrik->material_binding_count);
-				UI::table_row_text("pipline binding count", "%d", metrik->pipline_binding_count);
-				UI::table_row_text("draw calls", "%d", metrik->draw_calls);
-				UI::table_row_text("triangles", "%d", metrik->triangles);
+			ImGui::SeparatorText("FPS");
+			if (UI::begin_table("FPS_table", false, ImVec2(table_width, 0),0, true, 0.35f)) {
+
+				if (m_limit_fps)
+					snprintf(formatted_text, sizeof(formatted_text), "%4d/%4d  average: %5.2f", m_current_fps, m_target_fps, averagefps);
+				else 
+					snprintf(formatted_text, sizeof(formatted_text), "%4d  average: %5.2f", m_current_fps, averagefps);
+
+				UI::table_row_text("FPS", formatted_text);
+
+				if (show_progress_bars) {
+					snprintf(formatted_text, sizeof(formatted_text), "%5.2f ms", m_work_time);
+					UI::table_row_progressbar("work time:", formatted_text, work_percent);
+
+					snprintf(formatted_text, sizeof(formatted_text), "%5.2f ms", m_sleep_time);
+					UI::table_row_progressbar("sleep time:", formatted_text, sleep_percent);
+				}
+
+
+				UI::end_table();
+			}
+			
+			UI::shift_cursor_pos(0, 10);
+
+			if (show_graph) {
+
+				ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
+				ImGui::PushStyleColor(ImGuiCol_FrameBg, vector_multi(ImGui::GetStyleColorVec4(ImGuiCol_WindowBg), ImVec4{ 1, 1, 1, 0 }));
+				ImGui::PlotLines("##frame_times", frame_times, array_size, (array_pointer % array_size), (const char*)0, 0.0f, FLT_MAX, ImVec2(0, 70));
+				ImGui::PopStyleColor();
+				ImGui::PopStyleVar();
+
+				// Plot Lines
+				ImDrawList* draw_list = ImGui::GetWindowDrawList();
+				ImVec2 plot_size = ImGui::GetItemRectSize();
+				ImVec2 plot_pos = ImGui::GetItemRectMin();
+				ImVec2 plot_max_pos = { plot_pos.x + plot_size.x , plot_pos.y + plot_size.y };
+				static const char* const fps_text = "  0 10 20 30 40 50 60 70 80 90100110120130140150160170180190200210220230240250260270280290300310320330340350360370380390400410420430450460470480490500510520530540550560570580590600610620630640650660670680690700710720730740750760770780790800810820830840850860870890900910920930940950960970980990";
+				static const u32 offset = static_cast<u32>(ImGui::GetTextLineHeight() / 2);
+				static const u32 interval_thin = 10;
+				static const u64 interval_thick = 50;
+
+
+				const f32 max_value = math::calc_array_max(frame_times, 100);
+
+				u32 num_of_displayed_texts = 0;
+				u32 buffer = static_cast<u32>(max_value / 10);
+
+				for (u64 i = 0; i <= max_value; i += interval_thin) {
+
+					if (i > (buffer) * num_of_displayed_texts) {
+
+						const char* text = fps_text + (math::min<u64>(98, i / static_cast<u64>(interval_thin)) * 3);
+						float y = plot_max_pos.y - (i / max_value * plot_size.y);
+						ImU32 color = (i % interval_thick == 0) ? IM_COL32(action_color_00_active.x * 255, action_color_00_active.y * 255, action_color_00_active.z * 255, 255) : IM_COL32(200, 200, 200, 180);
+
+						draw_list->AddLine(ImVec2(plot_pos.x, y), ImVec2(plot_max_pos.x - 55, y), color);
+						draw_list->AddText(ImVec2(plot_max_pos.x - 50, y - offset), IM_COL32(200, 200, 200, 180), text, text + 3);
+						draw_list->AddLine(ImVec2(plot_max_pos.x - 20, y), ImVec2(plot_max_pos.x, y), color);
+						num_of_displayed_texts++;
+					}
+				}
+			}
+
+			// if (ImGui::BeginPopupContextWindow()) {
+
+			// }
+
+
+			auto* metrik = application::get().get_renderer()->get_general_performance_metrik_pointer();
+			ImGui::SeparatorText("Renderer Performance");
+			if (UI::begin_table("Performance Display", false, ImVec2(table_width, 0))) {
+
+				UI::table_row_text("meshes", "%d", metrik->meshes);
+				// UI::table_row_text("material binding count", "%d", metrik->material_binding_count);
+				// UI::table_row_text("pipline binding count", "%d", metrik->pipline_binding_count);
+				// UI::table_row_text("draw calls", "%d", metrik->draw_calls);
+				UI::table_row_text("vertices", "%d", metrik->vertices);
 				
 				UI::end_table();
 			}
@@ -302,8 +420,7 @@ namespace GLT::UI {
 				cursor_pos = ImGui::GetCursorPos();
 				static const u32 offset = static_cast<u32>(ImGui::GetTextLineHeight() / 2);
 
-	#if 1
-					// Plot Lines
+				// Plot Lines
 				ImDrawList* draw_list = ImGui::GetWindowDrawList();
 				ImVec2 plot_max_pos = { plot_pos.x + plot_size.x , plot_pos.y + plot_size.y };
 
@@ -341,33 +458,6 @@ namespace GLT::UI {
 					draw_list->AddText(ImVec2(plot_max_pos.x - 50 - text_size.x, y - y_tex_offset), IM_COL32(200, 200, 200, 255), label);
 					draw_list->AddLine(ImVec2(plot_max_pos.x - 15, y), ImVec2(plot_max_pos.x, y), color);
 				}
-	#else
-				// Plot Lines
-				static const char* const fps_text = " 0 ms 1 ms 2 ms 3 ms 4 ms 5 ms 6 ms 7 ms 8 ms 9 ms10 ms11 ms12 ms13 ms14 ms15 ms16 ms17 ms18 ms19 ms20 ms21 ms22 ms23 ms24 ms25 ms26 ms27 ms28 ms29 ms30 ms31 ms32 ms33 ms34 ms35 ms36 ms37 ms38 ms39 ms40 ms41 ms42 ms43 ms44 ms45 ms46 ms47 ms48 ms49 ms50 ms51 ms52 ms53 ms54 ms55 ms56 ms57 ms58 ms59 ms60 ms61 ms62 ms63 ms64 ms65 ms66 ms67 ms68 ms69 ms70 ms71 ms72 ms73 ms74 ms75 ms76 ms77 ms78 ms79 ms80 ms81 ms82 ms83 ms84 ms85 ms86 ms87 ms88 ms89 ms90 ms91 ms92 ms93 ms94 ms95 ms96 ms97 ms98 ms99 ms";
-				ImDrawList* draw_list = ImGui::GetWindowDrawList();
-				ImVec2 plot_max_pos = { plot_pos.x + plot_size.x , plot_pos.y + plot_size.y };
-				static const u32 interval = (plot_max_value > 100) ? 10 : 1;
-				static const u32 text_size = 5;
-				static const u64 text_begin_offset = (plot_max_value > 100) ? text_size * 10 : 0;
-
-				u32 num_of_displayed_texts = 0;
-				u32 buffer = static_cast<u32>(plot_max_value / 8);
-				for (u32 x = 0; x < plot_max_value - 1; x += interval) {
-
-					if (x > (buffer) * num_of_displayed_texts) {
-
-						const char* text = fps_text + (math::min<u64>(98, x + text_begin_offset) * text_size);
-						float y = plot_max_pos.y - (x / plot_max_value * plot_size.y);
-						ImU32 color = (x % 5 == 0) ? IM_COL32(action_color_00_active.x * 255, action_color_00_active.y * 255, action_color_00_active.z * 255, 255) : IM_COL32(200, 200, 200, 180);
-
-						// f32 y_pos = plot_max_pos.y - (x / plot_max_value * plot_size.y);
-						draw_list->AddLine(ImVec2(plot_pos.x, y), ImVec2(plot_max_pos.x - 55, y), color);
-						draw_list->AddText(ImVec2(plot_max_pos.x - 50, y - offset), IM_COL32(200, 200, 200, 180), text, text + text_size);
-						draw_list->AddLine(ImVec2(plot_max_pos.x - 15, y), ImVec2(plot_max_pos.x, y), color);
-						num_of_displayed_texts++;
-					}
-				}
-	#endif
 
 				ImGui::TextColored(renderer_draw_plot_col, "renderer draw %5.2f ms", metrik->renderer_draw_time[metrik->current_index]);
 				ImGui::TextColored(draw_geometry_plot_col, "draw geometry %5.2f ms", metrik->draw_geometry_time[metrik->current_index]);
@@ -376,8 +466,24 @@ namespace GLT::UI {
 
 			if (ImGui::BeginPopupContextWindow()) {
 
-				ImGui::Checkbox("show timing graphs", &show_graphs);
+				static u32 min_fps = 1;
+				static u32 max_fps = 1000;
+				if (UI::begin_table("renderer_performance_settings", true, ImVec2(table_width, 0))) {
 
+					ImGui::SeparatorText("FPS");
+					if (UI::table_row_drag_scalar<u32>("target FPS", application::get().get_target_fps_ref(), "%u FPS", min_fps, max_fps))
+						application::get().set_fps_settings(true, application::get().get_target_fps());
+
+					if (UI::table_row_drag_scalar<u32>("Non-focus FPS", application::get().get_nonefocus_fps_ref(), "%u FPS", min_fps, max_fps))
+						application::get().set_fps_settings(false, application::get().get_nonefocus_fps());
+
+					UI::end_table();
+				}
+				ImGui::Checkbox("show progress bars", &show_progress_bars);
+				ImGui::Checkbox("show FPS graph", &show_graph);
+
+				ImGui::SeparatorText("Renderer Performance");
+				ImGui::Checkbox("show timing graphs", &show_graphs);
 				UI::next_window_position_selector(renderer_metrik_window_location, m_show_renderer_metrik);
 
 				ImGui::EndPopup();
