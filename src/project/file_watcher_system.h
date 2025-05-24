@@ -3,14 +3,14 @@
 namespace GLT {
 
 	enum notify_filters {
-		FileName = 1,
-		DirectoryName = 2,
-		Attributes = 4,
-		Size = 8,
-		LastWrite = 16,
-		LastAccess = 32,
-		CreationTime = 64,
-		Security = 256
+		file_name = 1,
+		directory_name = 2,
+		attributes = 4,
+		size = 8,
+		last_write = 16,
+		last_access = 32,
+		creation_time = 64,
+		security = 256
 	};
 
 	enum file_actions {
@@ -31,11 +31,11 @@ namespace GLT {
 		void stop();
 
 	public:
-		typedef void (*on_changed_fnuc)(const std::filesystem::path& file);
-		typedef void (*on_renamed_fnuc)(const std::filesystem::path& file);
-		typedef void (*on_deleted_fnuc)(const std::filesystem::path& file);
-		typedef void (*on_created_fnuc)(const std::filesystem::path& file);
-		typedef void (*compile_fnuc)();
+		using on_changed_fnuc = std::function<void(const std::filesystem::path&)>;
+		using on_renamed_fnuc = std::function<void(const std::filesystem::path&)>;
+		using on_deleted_fnuc = std::function<void(const std::filesystem::path&)>;
+		using on_created_fnuc = std::function<void(const std::filesystem::path&)>;
+		using compile_fnuc = std::function<void()>;
 
 		on_changed_fnuc				on_changed = nullptr;
 		on_renamed_fnuc				on_renamed = nullptr;

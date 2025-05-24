@@ -10,6 +10,7 @@ namespace GLT {
 	
 	class camera;
 	class player_controller;
+	namespace serializer { enum class option; }
 	
 	// ============= DEV-ONLY =============
 	namespace geometry { class static_mesh; }
@@ -52,6 +53,7 @@ namespace GLT {
 
 		// ============= DEV-ONLY =============
 		ref<GLT::geometry::static_mesh> GET_RENDER_MESH();
+		void serialize(const serializer::option option);
 		// ============= DEV-ONLY =============
 
 	private:

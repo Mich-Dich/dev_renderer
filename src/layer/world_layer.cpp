@@ -9,6 +9,7 @@
 #include "game_object/camera.h"
 #include "game_object/player_controller.h"
 #include "util/io/serializer_yaml.h"
+#include "util/util.h"
 
 #include "world_layer.h"
 
@@ -27,6 +28,31 @@ namespace GLT {
 	static ref<GLT::geometry::static_mesh> MAIN_RENDER_MESH = create_ref<GLT::geometry::static_mesh>();
 	ref<GLT::geometry::static_mesh> world_layer::GET_RENDER_MESH() { return MAIN_RENDER_MESH; }
 	// ============= DEV-ONLY =============
+	
+	// ============= TODO: move to editor layer =============
+	void world_layer::serialize(const serializer::option option) {
+
+		auto perspective_fov_y = m_editor_camera->get_perspective_fov_y();
+		auto direction = m_editor_camera->get_direction();
+		auto position = m_editor_camera->get_position();
+		LOG(Trace, "direction [" << util::to_string(direction) << "] position [" << util::to_string(position) << "]")
+
+		serializer::yaml(util::get_executable_path().parent_path() / "config" / "editor.yml", "world layer data", option)
+			.sub_section("editor camera", [&](serializer::yaml& section) {
+				section.entry(KEY_VALUE(perspective_fov_y))
+				.entry(KEY_VALUE(direction))
+				.entry(KEY_VALUE(position));
+			});
+
+		if (option == serializer::option::load_from_file) {
+
+			LOG(Debug, "perspective_fov_y [" << util::to_string(perspective_fov_y) << "] direction [" << util::to_string(direction) << "] position [" << util::to_string(position) << "]")
+			m_editor_camera->set_fov_y(perspective_fov_y);
+			m_editor_camera->set_view_XYZ(position, direction);
+		}
+	}
+	// ============= TODO: move to editor layer =============
+	
 
 	world_layer::world_layer() { 
 
@@ -57,22 +83,20 @@ namespace GLT {
 	
 		m_editor_camera = create_ref<camera>();
 		m_editor_camera->set_view_direction(glm::vec3{ 0.0f }, glm::vec3{ 0.5f, 0.0f, 1.0f });
-		// m_editor_camera.set_orthographic_projection(-aspect, aspect, -1, 1, 0, 10);
-		// m_editor_camera->set_perspective_projection(glm::radians(50.f), application::get().application::get().get_renderer()()->get_aspect_ratio(), 0.1f, 350.0f);
-
-		// float aspect = m_swapchain->get_extentAspectRatio();
-		// m_editor_camera.set_view_target(glm::vec3(-1.0f, -2.0f, -3.0f), glm::vec3(0.0f));
 				
 		// ============= DEV-ONLY =============
-		ASSERT(GLT::factory::geometry::load_static_mesh("/home/mich/Documents/gameassets_3D/_exports/basic_test_meshes/Barrel.glb", MAIN_RENDER_MESH), "test mesh imported successfully", "Failed to import test mesh");
+		ASSERT(GLT::factory::geometry::load_static_mesh( util::get_executable_path().parent_path() / "assets" / "meshes" / "Barrel.glb", MAIN_RENDER_MESH), "test mesh imported successfully", "Failed to import test mesh");
 		application::get().get_renderer()->upload_static_mesh(MAIN_RENDER_MESH);
 		// ============= DEV-ONLY =============
-
+		
+		serialize(serializer::option::load_from_file);
 
 		LOG(Trace, "attaching world_layer");
 	}
 
 	void world_layer::on_detach() { 
+
+		serialize(serializer::option::save_to_file);
 
 		// m_player_controller.reset();
 		m_editor_camera.reset();

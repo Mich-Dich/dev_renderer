@@ -75,8 +75,8 @@ namespace GLT::factory::geometry {
 
     bool load_static_mesh(const std::filesystem::path& file_path, ref<GLT::geometry::static_mesh> out_mesh) {
     
-        f32 buffer = 0, time = 0;
-        util::stopwatch loc_stopwatch = util::stopwatch(&time, duration_precision::microseconds);
+        f32 import_time = 0.f;
+        util::stopwatch import_time_stopwatch = util::stopwatch(&import_time, duration_precision::microseconds);
         
         Assimp::Importer importer;
         const aiScene* scene = importer.ReadFile(file_path.string(),
@@ -129,16 +129,14 @@ namespace GLT::factory::geometry {
         }
 
 
-        loc_stopwatch.stop();
-        buffer = time;
-        
-        optimize_static_mesh(out_mesh);
-        
-        loc_stopwatch.restart();
+        // optimize_static_mesh(out_mesh);
+        import_time_stopwatch.stop();
 
-        out_mesh->compute_bounds();
-        loc_stopwatch.stop();
-        LOG(Debug, "Function took: [" << buffer + time << "]")
+        // util::stopwatch VBH_generation_time_stopwatch = util::stopwatch(&VBH_generation_time, duration_precision::microseconds);
+        // out_mesh->build_BVH();
+        // VBH_generation_time_stopwatch.stop();
+
+        LOG(Debug, "import time: [" << import_time << "]")
         
         return true;
     }

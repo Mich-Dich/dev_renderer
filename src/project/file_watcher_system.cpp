@@ -89,14 +89,14 @@ namespace GLT {
 
 		// Set up notification flags 
 		int flags = 0;
-		BIT_FLAG_IF(notify_filters::FileName, FILE_NOTIFY_CHANGE_FILE_NAME);
-		BIT_FLAG_IF(notify_filters::DirectoryName, FILE_NOTIFY_CHANGE_DIR_NAME);
-		BIT_FLAG_IF(notify_filters::Attributes, FILE_NOTIFY_CHANGE_ATTRIBUTES);
-		BIT_FLAG_IF(notify_filters::Size, FILE_NOTIFY_CHANGE_SIZE);
-		BIT_FLAG_IF(notify_filters::LastWrite, FILE_NOTIFY_CHANGE_LAST_WRITE);
-		BIT_FLAG_IF(notify_filters::LastAccess, FILE_NOTIFY_CHANGE_LAST_ACCESS);
-		BIT_FLAG_IF(notify_filters::CreationTime, FILE_NOTIFY_CHANGE_CREATION);
-		BIT_FLAG_IF(notify_filters::Security, FILE_NOTIFY_CHANGE_SECURITY);
+		BIT_FLAG_IF(notify_filters::file_name, FILE_NOTIFY_CHANGE_FILE_NAME);
+		BIT_FLAG_IF(notify_filters::directory_name, FILE_NOTIFY_CHANGE_DIR_NAME);
+		BIT_FLAG_IF(notify_filters::attributes, FILE_NOTIFY_CHANGE_ATTRIBUTES);
+		BIT_FLAG_IF(notify_filters::size, FILE_NOTIFY_CHANGE_SIZE);
+		BIT_FLAG_IF(notify_filters::last_write, FILE_NOTIFY_CHANGE_LAST_WRITE);
+		BIT_FLAG_IF(notify_filters::last_access, FILE_NOTIFY_CHANGE_LAST_ACCESS);
+		BIT_FLAG_IF(notify_filters::creation_time, FILE_NOTIFY_CHANGE_CREATION);
+		BIT_FLAG_IF(notify_filters::security, FILE_NOTIFY_CHANGE_SECURITY);
 
 		char filename[MAX_PATH];
 		char buffer[2048];
@@ -242,14 +242,12 @@ namespace GLT {
 		// Add subdirectory watches if needed
 		if (include_sub_directories) {
 			try {
-				for (auto& entry : std::filesystem::recursive_directory_iterator(path)) {
-					if (entry.is_directory()) {
+				for (auto& entry : std::filesystem::recursive_directory_iterator(path))
+					if (entry.is_directory())
 						add_watch(entry.path());
-					}
-				}
-			} catch (const std::filesystem::filesystem_error& e) {
+
+			} catch (const std::filesystem::filesystem_error& e)
 				LOG(Error, "Directory iterator error: " << e.what());
-			}
 		}
 
 		is_started = true;
@@ -312,19 +310,17 @@ namespace GLT {
 
 					// Map inotify events to actions
 					int action = 0;
-					if (event->mask & (IN_CREATE | IN_MOVED_TO)) {
+					if (event->mask & (IN_CREATE | IN_MOVED_TO))
 						action = event->mask & IN_ISDIR ? 0 : FILE_ACTION_ADDED;
-					} else if (event->mask & (IN_DELETE | IN_MOVED_FROM)) {
+					else if (event->mask & (IN_DELETE | IN_MOVED_FROM))
 						action = event->mask & IN_ISDIR ? 0 : FILE_ACTION_REMOVED;
-					} else if (event->mask & IN_MODIFY) {
+					else if (event->mask & IN_MODIFY)
 						action = FILE_ACTION_MODIFIED;
-					} else if (event->mask & IN_ATTRIB) {
+					else if (event->mask & IN_ATTRIB)
 						action = FILE_ACTION_ATTRIBUTES_CHANGED;
-					}
 
-					if (action != 0) {
+					if (action != 0)
 						process_event(full_path, action);
-					}
 				}
 
 				// Process debounced events
@@ -337,9 +333,8 @@ namespace GLT {
 						if (now - it->second.second >= m_debounce_time) {
 							events_to_process.emplace_back(it->first, it->second.first);
 							it = m_pending_events.erase(it);
-						} else {
+						} else
 							++it;
-						}
 					}
 				}
 

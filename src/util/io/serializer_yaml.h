@@ -160,8 +160,6 @@ namespace GLT::serializer {
 
 				// deserialize content of subsections				
 				int64 index = -1;
-				bool found_section = false;
-				const u32 section_indentation = 0;
 				std::string line;
 				while (std::getline(file_content_buffer, line)) {
 
@@ -172,8 +170,6 @@ namespace GLT::serializer {
 					// if line contains desired section enter inner-loop
 					//   has correct indentaion              has correct vector_name                          ends with double-point
 					if ((util::measure_indentation(line, NUM_OF_INDENTING_SPACES) == 0) && (line.find(vector_name) != std::string::npos) && (line.back() == ':')) {
-
-						found_section = true;
 
 						//     not end of content
 						while (std::getline(file_content_buffer, line)) {

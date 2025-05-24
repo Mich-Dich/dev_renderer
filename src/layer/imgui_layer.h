@@ -25,7 +25,7 @@ namespace GLT::UI {
 		light
 	};
 
-	static std::filesystem::path ini_file_location = GLT::config::get_filepath_from_configtype_ini(util::get_executable_path(), config::file::imgui).c_str();
+	static std::filesystem::path ini_file_location = GLT::config::get_filepath_from_configtype_ini(util::get_executable_path().parent_path(), config::file::imgui).c_str();
 
 	static f32  m_font_size = 15.f, m_font_size_header_0 = 19.f, m_font_size_header_1 = 23.f, m_font_size_header_2 = 27.f, m_big_font_size = 18.f;
 	static theme_selection UI_theme = theme_selection::dark;

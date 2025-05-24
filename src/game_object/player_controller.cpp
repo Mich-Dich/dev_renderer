@@ -264,7 +264,7 @@ namespace GLT {
 
 				if (key_binding_details->key == event.get_keycode()) {						// check if I have an event for that key
 
-					std::chrono::time_point<std::chrono::steady_clock> time_now = std::chrono::steady_clock::now();
+					// std::chrono::time_point<std::chrono::steady_clock> time_now = std::chrono::steady_clock::now();
 
 					bool m_buffer = false;
 					f32 event_value = event.get_value();

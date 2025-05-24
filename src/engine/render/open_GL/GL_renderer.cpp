@@ -15,12 +15,24 @@
 #include "geometry/static_mesh.h"
 #include "engine/platform/window.h"
 #include "game_object/camera.h"
+#include "project/file_watcher_system.h"
 
 #include "GL_renderer.h"
 
 
 namespace GLT::render::open_GL {
 
+
+    static GLT::file_watcher_system		    m_file_watcher{};
+
+	
+    void GL_renderer::auto_reload_file(const std::filesystem::path& file) {
+
+        LOG(Trace, "File changed [" << file.generic_string() << "]");
+        std::string output{};
+        reload_fragment_shader(file, output);
+	}
+    
     GL_renderer::GL_renderer(ref<window> window, ref<layer_stack> layer_stack)
         : renderer(window, layer_stack) {
         
@@ -47,6 +59,17 @@ namespace GLT::render::open_GL {
         glEnable(GL_CULL_FACE);
         glCullFace(GL_BACK);
 
+        LOG(Trace, "Monitoring directory " << util::get_executable_path().parent_path() / "shaders");
+        m_file_watcher.path = util::get_executable_path().parent_path() / "shaders";
+		m_file_watcher.p_notify_filters = notify_filters::last_access | notify_filters::last_write | notify_filters::file_name | notify_filters::directory_name;
+		m_file_watcher.filter = "*.frag";
+		m_file_watcher.include_sub_directories = true;
+        m_file_watcher.on_changed = [this](const std::filesystem::path& file) { this->auto_reload_file(file); };
+        m_file_watcher.on_created = [this](const std::filesystem::path& file) { this->auto_reload_file(file); };
+        m_file_watcher.on_renamed = [this](const std::filesystem::path& file) { this->auto_reload_file(file); };
+		m_file_watcher.compile = nullptr;
+		m_file_watcher.start();
+
         m_active_camera = application::get().get_world_layer()->get_editor_camera();        // Force get editor camera for now
 
 #ifdef DEBUG
@@ -56,6 +79,7 @@ namespace GLT::render::open_GL {
     
     GL_renderer::~GL_renderer() {
         
+		m_file_watcher.stop();
     }
     
 
@@ -78,15 +102,26 @@ namespace GLT::render::open_GL {
     
         // ------ bind mesh ------
         ref<GLT::geometry::static_mesh> mesh = application::get().get_world_layer()->GET_RENDER_MESH();
-        GLint loc_center = glGetUniformLocation(m_shader_program, "u_mesh_center");
-        GLint loc_radius = glGetUniformLocation(m_shader_program, "u_mesh_radius");
-        glUniform3f(loc_center, mesh->center.x, mesh->center.y, mesh->center.z);
-        glUniform1f(loc_radius, mesh->radius);
         glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, mesh->vertex_ssbo);
         glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, mesh->index_ssbo);
+        glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 2, mesh->bvh_ssbo);
+        glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 3, mesh->triidx_ssbo);
         
+        // Add BVH-related uniforms
+        GLint loc_bvh_root = glGetUniformLocation(m_shader_program, "u_bvh_root");
+        GLint loc_bvh_nodes = glGetUniformLocation(m_shader_program, "u_bvh_nodes");
+        glUniform1i(loc_bvh_root, 0);  // Root node index
+        glUniform1i(loc_bvh_nodes, 2); // SSBO binding point
+        mesh->vertex_buffer.bind();
+        mesh->index_buffer.bind();
+
+        // ------ BVH debug uniforms ------
+        glUniform1i(glGetUniformLocation(m_shader_program, "u_bvh_viz_bounds_depth"), mesh->bvh_viz_max_depth);
+        glUniform1i(glGetUniformLocation(m_shader_program, "u_bvh_viz_triangle_depth"), mesh->bvh_show_leaves);
+        glUniform4fv(glGetUniformLocation(m_shader_program, "u_bvh_viz_color"), 1, glm::value_ptr(mesh->bvh_viz_color));
+
         // ------ Camera uniforms ------
-        const glm::mat4 inv_proj = glm::inverse(glm::perspective(glm::radians(m_active_camera->get_perspective_fov_y()), (float)m_window->get_width() / (float)m_window->get_height(), m_active_camera->get_clipping_far(), m_active_camera->get_clipping_near()));
+        const glm::mat4 inv_proj = m_active_camera->get_inverse_projection((f32)m_window->get_width() / (f32)m_window->get_height());
         const glm::mat4 inv_view = m_active_camera->get_inverse_view();
         const glm::vec3 cam_pos = m_active_camera->get_position();
 
@@ -94,20 +129,16 @@ namespace GLT::render::open_GL {
         glUniformMatrix4fv(glGetUniformLocation(m_shader_program, "u_inv_view"), 1, GL_FALSE, glm::value_ptr(inv_view));
         glUniform3f(glGetUniformLocation(m_shader_program, "u_cam_pos"), cam_pos.x, cam_pos.y, cam_pos.z);
 
-        // ------ Set uniforms ------
-        GLint loc_resolution = glGetUniformLocation(m_shader_program, "u_resolution");
-        GLint loc_mouse = glGetUniformLocation(m_shader_program, "u_mouse");
-        GLint loc_time = glGetUniformLocation(m_shader_program, "u_time");
-    
+        // ------ Set general uniforms ------
         const int height = m_window->get_height();
-        glUniform2f(loc_resolution, (float)m_window->get_width(), (float)height);
+        glUniform2f(glGetUniformLocation(m_shader_program, "u_resolution"), (float)m_window->get_width(), (float)height);
     
         m_window->get_mouse_position(mouse_pos);
-        glUniform2f(loc_mouse, mouse_pos.x, (height - mouse_pos.y)); // Flip Y
+        glUniform2f(glGetUniformLocation(m_shader_program, "u_mouse"), mouse_pos.x, (height - mouse_pos.y)); // Flip Y
     
         static float totalTime = 0.0f;
         totalTime += delta_time;
-        glUniform1f(loc_time, totalTime);
+        glUniform1f(glGetUniformLocation(m_shader_program, "u_time"), totalTime);
 
         // ------ Draw fullscreen quad ------
         glBindVertexArray(m_vao);
@@ -214,6 +245,12 @@ namespace GLT::render::open_GL {
 
     void GL_renderer::upload_static_mesh(ref<GLT::geometry::static_mesh> mesh) {
 
+        f32 VBH_generation_time = 0.f;
+        util::stopwatch VBH_generation_time_stopwatch = util::stopwatch(&VBH_generation_time, duration_precision::microseconds);
+        mesh->build_BVH();
+        VBH_generation_time_stopwatch.stop();
+        LOG(Debug, "BVH_generation_time [" << VBH_generation_time << "]")
+        
         mesh->vertex_buffer.create(mesh->vertices.data(), mesh->vertices.size() * sizeof(GLT::geometry::vertex));
         mesh->index_buffer.create(mesh->indices.data(), mesh->indices.size() * sizeof(u32));
 
@@ -260,6 +297,19 @@ namespace GLT::render::open_GL {
             glGenBuffers(1, &mesh->index_ssbo);
             glBindBuffer(GL_SHADER_STORAGE_BUFFER, mesh->index_ssbo);
             glBufferData(GL_SHADER_STORAGE_BUFFER, mesh->indices.size() * sizeof(u32), mesh->indices.data(), GL_STATIC_DRAW);
+        }
+
+        // Add BVH buffers
+        if (mesh->bvh_ssbo == 0) {
+            glGenBuffers(1, &mesh->bvh_ssbo);
+            glBindBuffer(GL_SHADER_STORAGE_BUFFER, mesh->bvh_ssbo);
+            glBufferData(GL_SHADER_STORAGE_BUFFER, mesh->BVH_nodes.size() * sizeof(GLT::geometry::BVH_node), mesh->BVH_nodes.data(), GL_STATIC_DRAW);
+        }
+
+        if (mesh->triidx_ssbo == 0) {
+            glGenBuffers(1, &mesh->triidx_ssbo);
+            glBindBuffer(GL_SHADER_STORAGE_BUFFER, mesh->triidx_ssbo);
+            glBufferData(GL_SHADER_STORAGE_BUFFER, mesh->triIdx.size() * sizeof(u32), mesh->triIdx.data(), GL_STATIC_DRAW);
         }
 
         glBindVertexArray(0);

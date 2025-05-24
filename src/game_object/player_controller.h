@@ -24,8 +24,8 @@ namespace GLT {
 		USE_IN_EDITOR FORCEINLINE const ref<input_mapping> get_input_mapping() const { return m_input_mapping; }
 
 		virtual void init();
-		virtual void update(f32 delta);
-		void update_internal(f32 delta);
+		virtual void update(f32 delta_time);
+		void update_internal(f32 delta_time);
 		void handle_event(event& event);
 
 		template <typename T>

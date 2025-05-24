@@ -20,7 +20,7 @@ namespace GLT {
 		FORCEINLINE void set_editor_camera_pos(const glm::vec3 pos)				{ m_camera_pos = pos; }
 		FORCEINLINE void set_editor_camera_direction(const glm::vec3 direction) { m_camera_direction = direction; }
 
-		void update(const f32 delta) override;
+		void update(const f32 delta_time) override;
 		void serialize(serializer::option option);
 
 	private:

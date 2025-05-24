@@ -12,6 +12,7 @@ namespace GLT {
 
 		input_action move;
 		input_action capture_mouse;
+		input_action change_rotation_origin;
 		input_action change_move_speed;
 		input_action look;
 		input_action toggle_fps;
@@ -52,6 +53,19 @@ namespace GLT {
 		};
 		capture_mouse.set_name("capture_mouse");
 		register_action(&capture_mouse, true);
+
+		
+		change_rotation_origin = input_action{};
+		change_rotation_origin.description = "left control to let the camera rotate around the origin";
+		change_rotation_origin.triger_when_paused = false;
+		change_rotation_origin.flags = 0;
+		change_rotation_origin.value = input::action_type::boolean;
+		change_rotation_origin.duration_in_sec = 0.5f;
+		change_rotation_origin.keys_bindings = {
+			{key_code::key_left_control, INPUT_ACTION_TRIGGER_KEY_DOWN},
+		};
+		change_rotation_origin.set_name("change_rotation_origin");
+		register_action(&change_rotation_origin, true);
 
 
 		look = input_action{};

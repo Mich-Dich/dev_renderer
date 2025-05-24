@@ -2,7 +2,11 @@
 
 #include "engine/render/renderer.h"
 
-namespace GLT { class layer_stack; }
+namespace GLT {
+
+    class layer_stack;
+    class file_watcher_system;
+}
 
 namespace GLT::render::open_GL {
 
@@ -26,15 +30,18 @@ namespace GLT::render::open_GL {
         void imgui_create_fonts();
 
     private:
-        GLuint          m_shader_program;
-        GLuint          m_vao;
-        GLuint          m_vbo;
-        glm::vec2       mouse_pos{};
-        GLuint          m_total_render_time{};
+        GLuint                              m_shader_program;
+        GLuint                              m_vao;
+        GLuint                              m_vbo;
+        glm::vec2                           mouse_pos{};
+        GLuint                              m_total_render_time{};
         
         void create_shader_program();
         void create_fullscreen_quad();
         bool compile_shader(GLuint& shader_handle, GLenum type, const char* source, std::string& output);
+        
+        void init_file_watcher();
+        void auto_reload_file(const std::filesystem::path& file);
     };
 
 }

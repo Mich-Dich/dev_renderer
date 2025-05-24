@@ -16,6 +16,11 @@
 #include "game_object/camera.h"
 #include "engine/render/renderer.h"
 
+#ifdef DEBUG
+#include "geometry/BVH.h"
+#include "geometry/static_mesh.h"
+#endif
+
 #include "imgui_layer.h"
 
 
@@ -217,22 +222,61 @@ namespace GLT::UI {
 		static std::string output{};
 		UI::set_next_window_pos(window_pos::top_left, 4.f);
 		ImGui::SetNextWindowBgAlpha(0.5f);
-		ImGui::Begin("Test", nullptr, ImGuiWindowFlags_AlwaysAutoResize); {
+		ImGui::Begin("Test", nullptr, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize); {
 
-			std::filesystem::path base_path = GLT::util::get_executable_path() / std::filesystem::path("..") / "shaders";
+			if (ImGui::CollapsingHeader("select shader to display")) {
+						
+				std::filesystem::path base_path = GLT::util::get_executable_path().parent_path() / "shaders";
+				show_directory_tree(base_path, true, [this](const std::filesystem::path& shader_path) { compile_result = application::get().get_renderer()->reload_fragment_shader(shader_path, output); });
+				if (!compile_result) {
 
-			show_directory_tree(base_path, true, [this](const std::filesystem::path& shader_path) { compile_result = application::get().get_renderer()->reload_fragment_shader(shader_path, output); });
+					ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.f, .2f, .2f, 1.f));
+					ImGui::SeparatorText("Compiler Error");
+					ImGui::PopStyleColor();
+					ImGui::Text("%s", output.c_str());
+				}
+			}
 
-			static f32 loc_FOV = 45.f;
-			if (ImGui::SliderFloat("FOV", &loc_FOV, 0.f, 180.f))
-				application::get().get_world_layer()->get_editor_camera()->set_fov_y(loc_FOV);
+			ref<GLT::geometry::static_mesh> mesh = application::get().get_world_layer()->GET_RENDER_MESH();
 
-			if (!compile_result) {
+			if (ImGui::CollapsingHeader("BVH Visualization Settings", ImGuiTreeNodeFlags_DefaultOpen)) {
 
-				ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.f, .2f, .2f, 1.f));
-				ImGui::SeparatorText("Compiler Error");
-				ImGui::PopStyleColor();
-				ImGui::Text(output.c_str());
+				if (UI::begin_table("BVH Statistics", false, ImVec2(280.f, 0))) {
+
+					UI::table_row_slider("Max Depth", mesh->bvh_viz_max_depth, 0, mesh->bvh_max_depth, 1.f);
+					UI::table_row("Show Leaves", mesh->bvh_show_leaves);
+					UI::table_row_slider_color("AABB Color", mesh->bvh_viz_color);
+					UI::end_table();
+				}
+			}
+
+			if (ImGui::CollapsingHeader("BVH data", ImGuiTreeNodeFlags_DefaultOpen)) {
+			
+				if (UI::begin_table("BVH Statistics", false, ImVec2(280.f, 0))) {
+	
+					UI::table_row_text("max_triangles_count", "%d", mesh->max_triangles_count);
+					UI::table_row_text("average_triangles_count", "%d", mesh->average_triangles_count);
+					UI::table_row_text("Total Nodes", "%d", mesh->BVH_nodes.size());
+					UI::table_row_text("Leaf Nodes", "%d", mesh->bvh_leaf_count);
+					UI::table_row_text("Max Depth", "%d", mesh->bvh_max_depth);
+					UI::table_row_text("build time", "%f ms", mesh->BVH_build_time / 1000.f);
+					UI::end_table();
+				}
+			}
+
+			if (ImGui::CollapsingHeader("BVH data", ImGuiTreeNodeFlags_DefaultOpen)) {
+			
+				ImGui::Button("Regenerate BVH");
+				if (UI::begin_table("BVH Statistics", false, ImVec2(280.f, 0))) {
+	
+					UI::table_row_text("max_triangles_count", "%d", mesh->max_triangles_count);
+					UI::table_row_text("average_triangles_count", "%d", mesh->average_triangles_count);
+					UI::table_row_text("Total Nodes", "%d", mesh->BVH_nodes.size());
+					UI::table_row_text("Leaf Nodes", "%d", mesh->bvh_leaf_count);
+					UI::table_row_text("Max Depth", "%d", mesh->bvh_max_depth);
+					UI::table_row_text("build time", "%f ms", mesh->BVH_build_time / 1000.f);
+					UI::end_table();
+				}
 			}
 
 		} ImGui::End();
@@ -418,7 +462,7 @@ namespace GLT::UI {
 				ImVec2 plot_size = ImGui::GetItemRectSize();
 
 				cursor_pos = ImGui::GetCursorPos();
-				static const u32 offset = static_cast<u32>(ImGui::GetTextLineHeight() / 2);
+				// static const u32 offset = static_cast<u32>(ImGui::GetTextLineHeight() / 2);
 
 				// Plot Lines
 				ImDrawList* draw_list = ImGui::GetWindowDrawList();
@@ -646,7 +690,7 @@ namespace GLT::UI {
 
 	void imgui_layer::serialize(serializer::option option) {
 
-		GLT::serializer::yaml(config::get_filepath_from_configtype(util::get_executable_path(), config::file::ui), "theme", option)			// load general aperance settings
+		GLT::serializer::yaml(config::get_filepath_from_configtype(util::get_executable_path().parent_path(), config::file::ui), "theme", option)			// load general aperance settings
 			.entry(KEY_VALUE(m_font_size))
 			.entry(KEY_VALUE(m_font_size_header_0))
 			.entry(KEY_VALUE(m_font_size_header_1))

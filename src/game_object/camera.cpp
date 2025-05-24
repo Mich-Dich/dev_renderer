@@ -22,7 +22,8 @@ namespace GLT {
 
 	void camera::set_view_direction(glm::vec3 position, glm::vec3 direction, glm::vec3 up) {
 
-		PROFILE_FUNCTION();
+		m_position = position;
+		m_direction = direction;
 
 		const glm::vec3 w{ glm::normalize(direction) };
 		const glm::vec3 u{ glm::normalize(glm::cross(w, up)) };
@@ -53,6 +54,7 @@ namespace GLT {
 	void camera::set_view_YXZ(glm::vec3 position, glm::vec3 rotation) {
 
 		m_position = position;
+		m_direction = rotation;
 
 		const float c1 = glm::cos(rotation.y);
 		const float c2 = glm::cos(rotation.x);
@@ -95,6 +97,7 @@ namespace GLT {
 	void camera::set_view_XYZ(glm::vec3 position, glm::vec3 rotation) {
 
 		m_position = position;
+		m_direction = rotation;
 
 		const float c1 = glm::cos(rotation.x);
 		const float c2 = glm::cos(rotation.y);
