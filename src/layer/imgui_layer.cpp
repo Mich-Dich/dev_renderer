@@ -17,8 +17,9 @@
 #include "engine/render/renderer.h"
 
 #ifdef DEBUG
-#include "geometry/BVH.h"
-#include "geometry/static_mesh.h"
+	#include "geometry/BVH.h"
+	#include "geometry/static_mesh.h"
+	#include "factories/mesh/asset_importer.h"
 #endif
 
 #include "imgui_layer.h"
@@ -170,11 +171,10 @@ namespace GLT::UI {
 	void imgui_layer::on_event(event& event) { }
 
 
-
-	void show_directory_tree(const std::filesystem::path& dir_path, const bool default_open, const std::function<void(const std::filesystem::path&)>& on_shader_select) {
+	void show_directory_tree(const std::filesystem::path& dir_path, const std::string_view extention, const bool default_open, const std::function<void(const std::filesystem::path&)>& on_shader_select) {
 			
 		if (!std::filesystem::is_directory(dir_path)) {
-			if (dir_path.extension() == ".frag") {
+			if (dir_path.extension() == extention) {
 
 				std::string filename = dir_path.filename().string();
 				ImGui::PushID(filename.c_str());
@@ -207,7 +207,7 @@ namespace GLT::UI {
 		const auto flags = (default_open) ? ImGuiTreeNodeFlags_DefaultOpen : 0;
 		if (ImGui::TreeNodeEx(label.c_str(), flags)) {
 			for (auto const& entry : entries)
-				show_directory_tree(entry.path(), false, on_shader_select);
+				show_directory_tree(entry.path(), extention, false, on_shader_select);
 			ImGui::TreePop();
 		}
 	}
@@ -227,7 +227,7 @@ namespace GLT::UI {
 			if (ImGui::CollapsingHeader("select shader to display")) {
 						
 				std::filesystem::path base_path = GLT::util::get_executable_path().parent_path() / "shaders";
-				show_directory_tree(base_path, true, [this](const std::filesystem::path& shader_path) { compile_result = application::get().get_renderer()->reload_fragment_shader(shader_path, output); });
+				show_directory_tree(base_path, ".frag", true, [this](const std::filesystem::path& shader_path) { compile_result = application::get().get_renderer()->reload_fragment_shader(shader_path, output); });
 				if (!compile_result) {
 
 					ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.f, .2f, .2f, 1.f));
@@ -264,9 +264,22 @@ namespace GLT::UI {
 				}
 			}
 
-			if (ImGui::CollapsingHeader("BVH data", ImGuiTreeNodeFlags_DefaultOpen)) {
+			if (ImGui::CollapsingHeader("Select mesh", ImGuiTreeNodeFlags_DefaultOpen)) {
 			
-				ImGui::Button("Regenerate BVH");
+				std::filesystem::path base_path = GLT::util::get_executable_path().parent_path() / "assets" / "meshes";
+				show_directory_tree(base_path, ".glb", true, [this](const std::filesystem::path& mesh_path) { 
+					
+					ref<GLT::geometry::static_mesh> mesh = application::get().get_world_layer()->GET_RENDER_MESH();
+					application::get().get_renderer()->remove_static_mesh(mesh);
+
+					ASSERT(GLT::factory::geometry::load_static_mesh( mesh_path, mesh), "test mesh imported successfully", "Failed to import test mesh");
+					application::get().get_renderer()->upload_static_mesh(mesh);
+
+				});
+			}
+
+			if (ImGui::CollapsingHeader("BVH data", ImGuiTreeNodeFlags_DefaultOpen)) {
+
 				if (UI::begin_table("BVH Statistics", false, ImVec2(280.f, 0))) {
 	
 					UI::table_row_text("max_triangles_count", "%d", mesh->max_triangles_count);

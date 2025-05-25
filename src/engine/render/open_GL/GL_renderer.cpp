@@ -247,7 +247,7 @@ namespace GLT::render::open_GL {
 
         f32 VBH_generation_time = 0.f;
         util::stopwatch VBH_generation_time_stopwatch = util::stopwatch(&VBH_generation_time, duration_precision::microseconds);
-        mesh->build_BVH();
+        mesh->build_BVH(16);
         VBH_generation_time_stopwatch.stop();
         LOG(Debug, "BVH_generation_time [" << VBH_generation_time << "]")
         
@@ -313,6 +313,40 @@ namespace GLT::render::open_GL {
         }
 
         glBindVertexArray(0);
+    }
+
+
+    void GL_renderer::remove_static_mesh(ref<GLT::geometry::static_mesh> mesh) {
+        
+        // Delete Vertex Array Object
+        if (mesh->vao != 0) {
+            glDeleteVertexArrays(1, &mesh->vao);
+            mesh->vao = 0;
+        }
+
+        // Delete Vertex Buffer
+        if (mesh->vertex_buffer.get_ID() != 0) {
+            GLuint vertex_id = mesh->vertex_buffer.get_ID();
+            glDeleteBuffers(1, &vertex_id);
+            mesh->vertex_buffer.set_ID(0);
+        }
+
+        // Delete Index Buffer
+        if (mesh->index_buffer.get_ID() != 0) {
+            GLuint index_id = mesh->index_buffer.get_ID();
+            glDeleteBuffers(1, &index_id);
+            mesh->index_buffer.set_ID(0);
+        }
+
+#define DELETE_SSBO(var)        if (var != 0) { glDeleteBuffers(1, &var); var = 0; }
+
+        DELETE_SSBO(mesh->vertex_ssbo)
+        DELETE_SSBO(mesh->index_ssbo)
+        DELETE_SSBO(mesh->bvh_ssbo)
+        DELETE_SSBO(mesh->triidx_ssbo)
+
+#undef DELETE_SSBO
+
     }
 
 

@@ -47,11 +47,12 @@ namespace GLT::geometry {
         void compute_bvh_stats();
 #endif
 
-        void build_BVH();
+        void build_BVH(const u32 target_tri_count = 32);
 
     private:
+        float evaluateSAH(const BVH_node& node, int axis, float pos, const std::vector<glm::vec3>& centroids);
         void update_node_bounds(u32 nodeIdx);
-        void subdivide(u32 nodeIdx, const std::vector<glm::vec3>& centroids);
+        void subdivide(u32 nodeIdx, const u32 target_tri_count, const std::vector<glm::vec3>& centroids);
     };
 
 }

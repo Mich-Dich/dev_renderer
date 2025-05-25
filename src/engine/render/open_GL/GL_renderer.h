@@ -21,8 +21,9 @@ namespace GLT::render::open_GL {
         void draw_frame(float delta_time);
         void set_size(const u32 width, const u32 height);
 
-        void upload_static_mesh(ref<GLT::geometry::static_mesh> mesh);
-        bool reload_fragment_shader(const std::filesystem::path& frag_file, std::string& output);
+        void upload_static_mesh(ref<GLT::geometry::static_mesh> mesh) override;
+        void remove_static_mesh(ref<GLT::geometry::static_mesh> mesh) override;
+        bool reload_fragment_shader(const std::filesystem::path& frag_file, std::string& output) override;
 
         // -------- ImGui --------
         void imgui_init();

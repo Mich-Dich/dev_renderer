@@ -17,7 +17,7 @@ namespace GLT::render {
         void unbind() const;
         void create(const void* data, size_t size);
     
-        DEFAULT_GETTER(u32,         ID)
+        DEFAULT_GETTER_SETTER(u32,  ID)
         DEFAULT_GETTER(type,        type)
         DEFAULT_GETTER(size_t,      size)
 

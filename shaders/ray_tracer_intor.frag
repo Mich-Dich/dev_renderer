@@ -35,11 +35,9 @@ struct Vertex {
 
 struct BVHNode {
     vec3 AABB_min;
-    uint left_node;
+    uint left_and_count;
     vec3 AABB_max;
     uint first_tri_index;
-    vec3 padding_buffer;
-    uint tri_count;
 };
 
 // ================================ get SSBOs ================================
@@ -142,13 +140,16 @@ HitInfo traverseBVH(ray r) {
         
         // Check ray against AABB
         BVHNode node = bvh_nodes[stack[--ptr]];
+        uint left_node = node.left_and_count & 0xFFFFu;
+        uint tri_count = (node.left_and_count >> 16) & 0xFFFFu;
+
         bestHit.num_of_checked_bounds += 1;
         float t_min, t_max;
         if (!intersectAABB(r, node.AABB_min, node.AABB_max, t_min, t_max)) continue;
         if (t_min > bestHit.t) continue;
 
-        if (node.tri_count > 0) { // Leaf node
-            for (uint i = 0; i < node.tri_count; i++) {
+        if (tri_count > 0) { // Leaf node
+            for (uint i = 0; i < tri_count; i++) {
                 uint triIndex = triIdx[node.first_tri_index + i];
                 uint idx0 = indices[triIndex * 3];
                 uint idx1 = indices[triIndex * 3 + 1];
@@ -168,8 +169,8 @@ HitInfo traverseBVH(ray r) {
                 }
             }
         } else { // Internal node
-            stack[ptr++] = node.left_node + 1; // Right child
-            stack[ptr++] = node.left_node;     // Left child
+            stack[ptr++] = left_node + 1; // Right child
+            stack[ptr++] = left_node;     // Left child
         }
     }
     return bestHit;

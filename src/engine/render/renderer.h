@@ -50,6 +50,7 @@ namespace GLT::render {
         virtual void set_size(const u32 width, const u32 height) = 0;
 
         virtual void upload_static_mesh(ref<GLT::geometry::static_mesh> mesh) = 0;
+        virtual void remove_static_mesh(ref<GLT::geometry::static_mesh> mesh) = 0;
         virtual bool reload_fragment_shader(const std::filesystem::path& frag_file, std::string& output) = 0;
 
         // -------- ImGui --------
